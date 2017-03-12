@@ -10,7 +10,7 @@ __pycache__/
 .Python
 env/
 <<<<<<< HEAD
-app/static
+
 =======
 >>>>>>> github/master
 build/
