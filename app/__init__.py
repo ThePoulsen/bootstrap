@@ -6,9 +6,6 @@ from flask_mail import Mail
 import flask_sijax
 from flask_htmlmin import HTMLMIN
 from flask_bootstrap import Bootstrap
-from .nav import nav, customRenderer
-from flask_nav import register_renderer
-
 
 # Setup Flask and read config from ConfigClass defined above
 app = Flask(__name__)
@@ -28,10 +25,6 @@ flask_sijax.Sijax(app)
 
 # Flask-bootstrap
 Bootstrap(app)
-
-# Flask-nav
-nav.init_app(app)
-register_renderer(app, 'custom', customRenderer)
 
 # Import models
 #from app.api.models import *
