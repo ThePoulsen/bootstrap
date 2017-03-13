@@ -10,14 +10,24 @@
 
 {% block styles %}
 {{super()}}
-<!--    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">-->
-    <link rel="stylesheet" href="{{url_for('static', filename='css/navbar-fixed-side.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
 {% endblock %}
 
 {% block title %}{% endblock %}
 
 {% block content %}
-{{nav.top.render()}}
+
+
+<div class="container-fluid">
+    <div class="row">
+    {{nav.top.render()}}
+    </div>
+    <div class="col col-12">
+    {% block pageContent %}{% endblock %}
+    </div>
+</div>
+
+
 
 {% endblock %}
 

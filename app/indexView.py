@@ -10,8 +10,3 @@ indexBP = Blueprint('indexBP', __name__)
 def indexView():
     flash('hej')
     return render_template('index.html')
-
-# indexView
-@indexBP.route('/test')
-def davView():
-    return render_template('dav.html')
