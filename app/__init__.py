@@ -6,6 +6,9 @@ from flask_mail import Mail
 import flask_sijax
 from flask_htmlmin import HTMLMIN
 from flask_bootstrap import Bootstrap
+from flask_nav import Nav
+from flask_nav.elements import *
+
 
 # Setup Flask and read config from ConfigClass defined above
 app = Flask(__name__)
@@ -25,6 +28,17 @@ flask_sijax.Sijax(app)
 
 # Flask-bootstrap
 Bootstrap(app)
+
+nav = Nav()
+nav.init_app(app)
+
+# registers the "top" menubar
+topbar = Navbar('',
+    View('Home', 'indexBP.indexView'),
+    View('Home', 'indexBP.indexView'),
+)
+nav.register_element('top', topbar)
+
 
 # Import models
 #from app.api.models import *
