@@ -2,6 +2,7 @@
 
 from flask import render_template, Blueprint, flash, request
 from forms import loginForm, registerForm, setPasswordForm
+from authAPI import authAPI
 
 authBP = Blueprint('authBP', __name__)
 
