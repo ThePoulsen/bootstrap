@@ -9,6 +9,5 @@ indexBP = Blueprint('indexBP', __name__)
 # indexView
 @indexBP.route('/')
 def indexView():
-    successMessage('hej')
-    errorMessage('hej')
     return render_template('index.html')
+

@@ -1,0 +1,67 @@
+{% set parentNav = [
+
+    (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'Profile'),
+] -%}
+
+{% set childNav = [
+    (['User','Superuser','Administrator'], 'authBP.logoutView', 'Log out', 'Profile'),
+] -%}
+
+
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target="#navbarCollapse" data-toggle="collapse" type="button">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a href="{{url_for('indexBP.indexView')}}" class="navbar-brand">Project title</a>
+        </div>
+        <div class="navbar-collapse collapse" id="navbarCollapse">
+            <ul class="nav navbar-nav">
+                {% if session['token'] %}
+                <li {% if request.endpoint == 'indexBP.indexView' %} class='active' {% endif %}>
+                    <a href="{{url_for('indexBP.indexView')}}">Home</a>
+                </li>
+
+                {% for authList, class, span, title in parentNav %}
+                <li>
+                <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">{{title}}<span class="caret"></span></a>
+
+                    <ul class="dropdown-menu">
+                        {% for authList2,  view, header, parent in childNav %}
+                            {% if parent == title %}
+                            <li {% if request.endpoint == view %} class='active' {% endif %}>
+                                <a href="{{url_for(view)}}">{{header}}</a>
+                            </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+
+                </li>
+
+                {% endfor %}
+
+                {% else %}
+
+                <li {% if request.endpoint == 'indexBP.indexView' %} class='active' {% endif %}>
+                    <a href="{{url_for('indexBP.indexView')}}">Home</a>
+                </li>
+                <li {% if request.endpoint == 'authBP.loginView' %} class='active' {% endif %}>
+                    <a href="{{url_for('authBP.loginView')}}">Log in</a>
+                </li>
+                <li {% if request.endpoint == 'authBP.registerView' %} class='active' {% endif %}>
+                    <a href="{{url_for('authBP.registerView')}}">Register account</a>
+                </li>
+
+                {% endif %}
+
+
+            </ul>
+        </div>
+    </div>
+</nav>

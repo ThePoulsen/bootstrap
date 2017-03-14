@@ -6,8 +6,6 @@ from flask_mail import Mail
 import flask_sijax
 from flask_htmlmin import HTMLMIN
 from flask_bootstrap import Bootstrap
-from flask_nav import Nav
-from .nav import topbar
 
 # Setup Flask and read config from ConfigClass defined above
 app = Flask(__name__)
@@ -27,10 +25,6 @@ flask_sijax.Sijax(app)
 
 # Flask-bootstrap
 Bootstrap(app)
-
-nav = Nav()
-nav.init_app(app)
-nav.register_element('top', topbar)
 
 # Import models
 #from app.api.models import *
