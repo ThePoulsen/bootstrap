@@ -11,6 +11,7 @@
 {% block styles %}
 {{super()}}
     <link rel="stylesheet" href="{{url_for('static', filename='css/style.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css')}}">
 {% endblock %}
 
 {% block title %}{% endblock %}
@@ -53,5 +54,10 @@
 {% block scripts %}
 {{super()}}
 <script src="{{url_for('static', filename='myscripts.js')}}"></script>
+<script>
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();
+});
+</script>
 
 {% endblock %}

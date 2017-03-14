@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}This is an example page{% endblock %}
+
+{% block pageContent %}
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div class="panel-body">
+
+        <table class="table table-hover">
+        <thead>
+            <tr>
+            {% for c in tableColumns %}
+                <th>{{ c|safe }}</th>
+            {% endfor %}
+
+            {% if not withoutDetailsButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutEditButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutDeleteButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutNewButton %}
+                <th class="tableButtons">
+                    <a href="{{ request.path }}/new">
+                        <i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i>
+                    </a>
+                </th>
+            {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+        {% for row in tableData %}
+            <tr>
+                {% for column in row[1:] %}
+                    <td>{{ column|safe }}</td>
+                {% endfor %}
+
+                {% if not withoutNewButton %}
+                    <td class="tableButtons"></td>
+                {% endif %}
+
+                {% if not withoutDetailsButton %}
+                    <td class="tableButtons">
+                        <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="post">
+                            <input type='hidden' class="updateButton" type="submit" value="Update">
+                        </form>
+                        <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
+                            <i class="fa fa-search" data-toggle="tooltip" title="View row details"></i>
+                        </a>
+                    </td>
+                {% endif %}
+
+                {% if not withoutEditButton %}
+                    <td class="tableButtons">
+                        <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="post">
+                            <input type='hidden' class="updateButton" type="submit" value="Edit">
+                        </form>
+                        <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
+                            <i class="fa fa-pencil" data-toggle="tooltip" title="Edit row"></i>
+                        </a>
+                    </td>
+
+                {% endif %}
+
+                {% if not withoutDeleteButton %}
+                    <td class="tableButtons">
+                        <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
+                            <input type='hidden' class="updateButton" type="submit" value="Edit">
+                        </form>
+                        <a href="#" onclick="document.forms['deleteRow{{row[0]}}'].submit(); return false;">
+                            <i class="fa fa-times" data-toggle="tooltip" title="Delete row"></i>
+                        </a>
+                    </td>
+                {% endif %}
+
+
+
+
+
+            </tr>
+        {% endfor %}
+        </tbody>
+
+</table>
+
+
+
+
+
+
+    </div>
+</div>
+{% endblock %}

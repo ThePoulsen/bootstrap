@@ -3,7 +3,7 @@
 from flask import render_template, Blueprint, flash, request, session, redirect, url_for
 from forms import loginForm, registerForm, setPasswordForm
 from authAPI import authAPI
-from app.services.services import errorMessage, successMessage
+from app.services.services import errorMessage, successMessage, loginRequired, requiredRole
 
 authBP = Blueprint('authBP', __name__)
 
@@ -65,3 +65,36 @@ def logoutView():
     session.clear()
     successMessage(u'You are now logged out')
     return redirect(url_for('indexBP.indexView'))
+
+# listView
+@authBP.route('/users', methods=['GET'])
+@authBP.route('/user/<string:function>/<string:uuid>', methods=['GET', 'POST'])
+@loginRequired
+@requiredRole(['Administrator','Superuser'])
+def userView(function=None, uuid=None):
+    kwargs = {'title':'System users'}
+
+    # Get users
+    if function == None:
+        users = authAPI(endpoint='user?includeRoles=True&includeGroups=True', method='get', token=session['token'])
+
+        if not 'error' in users:
+            users = users['users']
+            tableData = []
+            for u in users:
+                roles = ''
+                for r in u['roles']:
+                    roles = roles + str(r['title']) +'<br>'
+                groups = ''
+                for gr in u['groups']:
+                    groups = groups + str(gr['name']) +'<br>'
+                temp = [u['uuid'],u['name'],u['email'], roles, groups]
+                tableData.append(temp)
+
+            kwargs['tableColumns'] =['User name','Email','Roles','Groups']
+            kwargs['tableData'] = tableData
+        else:
+            errorMessage('You are not authorized for this content')
+
+
+    return render_template('listView.html', **kwargs)
