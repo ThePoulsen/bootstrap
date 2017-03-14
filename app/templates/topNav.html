@@ -1,13 +1,15 @@
 {% set parentNav = [
 
+    (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
     (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'Profile'),
     (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'User Management'),
 ] -%}
 
 {% set childNav = [
+    (['User','Superuser','Administrator'], 'userBP.profileView', 'Profile', 'Profile', 'fa-user'),
     (['User','Superuser','Administrator'], 'authBP.logoutView', 'Log out', 'Profile', 'fa-user'),
 
-    (['User','Superuser','Administrator'], 'authBP.userView', 'Users', 'User Management', 'fa-user'),
+    (['User','Superuser','Administrator'], 'userBP.userView', 'Users', 'User Management', 'fa-user'),
 ] -%}
 
 

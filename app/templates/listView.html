@@ -76,27 +76,22 @@
                         <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
                             <input type='hidden' class="updateButton" type="submit" value="Edit">
                         </form>
-                        <a href="#" onclick="document.forms['deleteRow{{row[0]}}'].submit(); return false;">
+                        <a href="#" data-toggle="modal" data-target=".deleteModal{{row[0]}}">
                             <i class="fa fa-times" data-toggle="tooltip" title="Delete row"></i>
                         </a>
                     </td>
                 {% endif %}
-
-
-
-
-
             </tr>
         {% endfor %}
         </tbody>
-
 </table>
 
-
-
-
-
-
+{% include 'modal/deleteModal.html' %}
+<script type="text/javascript">
+    function confirm_click(){
+        return confirm("Are you sure ?");
+    }
+</script>
     </div>
 </div>
 {% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}User profile{% endblock %}
+
+{% block pageContent %}
+
+<div class="col col-10 col-sm-7 col-md-6 col-lg-4 col-xl-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">Edit user</h3>
+        </div>
+        <div class="panel-body">
+            <form method="post" name="userForm" id="userForm">
+                <div class="form-group">
+                    {{ form.name.label }}
+                    {{ form.name(class_='form-control ')}}
+                    {% for error in form.name.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label }}
+                    {{ form.email(class_='form-control ')}}
+                    {% for error in form.email.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+                <div class="form-group">
+                    {{ form.phone.label }}
+                    {{ form.phone(class_='form-control ')}}
+                    {% for error in form.phone.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+                <div class="checkbox">
+                    <label>
+                        {{ form.locked() }} Locked?
+                    </label>
+                </div>
+
+                <div style="float:right;">
+                    {{ form.csrf_token }}
+                    <a href="{{url_for('userBP.userView')}}">Cancel</a> &nbsp
+                    <input type="submit" class="btn btn-primary" tabindex="1" value="Save changes">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

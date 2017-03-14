@@ -1,8 +1,9 @@
 ## -*- coding: utf-8 -*-
 from flask import flash, session, redirect, url_for
-from app import db
+from app import db, mail
 from functools import wraps
 from authAPI import authAPI
+from flask_mail import Message
 
 def errorMessage(msg):
     return flash(str(msg), ('danger', 'Error'))
@@ -13,6 +14,13 @@ def successMessage(msg):
 def listData(model, **kwargs):
     data = model.query.all()
     return data
+
+# SendMail
+def sendMail(subject, sender, recipients, text_body, html_body):
+    mesg = Message(subject, sender=sender, recipients=recipients)
+    mesg.body = text_body
+    mesg.html = html_body
+    mail.send(mesg)
 
 # flask view decorators
 def requiredRole(*roleList):

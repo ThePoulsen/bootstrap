@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}User profile{% endblock %}
+
+{% block pageContent %}
+
+<div class="col col-10 col-sm-7 col-md-6 col-lg-4 col-xl-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">User profile</h3>
+        </div>
+        <div class="panel-body">
+            <p><b>Name:</b>&nbsp;{{user['name']|safe}}</p>
+            <p><b>Email:</b>&nbsp;{{user['email']|safe}}</p>
+            <p><b>Phone:</b>&nbsp;{{user['phone']|safe}}</p>
+            <p><b>Member since:</b>&nbsp;{{user['conf_at']|safe}}</p>
+
+            <p><b>Roles:</b>&nbsp;{% for role in user['roles'] %}{{ role['title'] }},&nbsp;{% endfor %}</p>
+            <p><b>Groups:</b>&nbsp;{% for group in user['groups'] %}{{ group['name'] }},&nbsp;{% endfor %}</p>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

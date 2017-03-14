@@ -32,7 +32,9 @@ Bootstrap(app)
 ## import blueprints
 from .indexView import indexBP
 from app.auth.views import authBP
+from app.user.views import userBP
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
 app.register_blueprint(authBP, url_prefix='')
+app.register_blueprint(userBP, url_prefix='')
