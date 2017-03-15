@@ -10,4 +10,3 @@ indexBP = Blueprint('indexBP', __name__)
 @indexBP.route('/')
 def indexView():
     return render_template('index.html')
-

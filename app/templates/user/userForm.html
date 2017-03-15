@@ -11,6 +11,7 @@
         </div>
         <div class="panel-body">
             <form method="post" name="userForm" id="userForm">
+
                 <div class="form-group">
                     {{ form.name.label }}
                     {{ form.name(class_='form-control ')}}
@@ -18,6 +19,7 @@
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
+
                 <div class="form-group">
                     {{ form.email.label }}
                     {{ form.email(class_='form-control ')}}
@@ -25,6 +27,7 @@
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
+
                 <div class="form-group">
                     {{ form.phone.label }}
                     {{ form.phone(class_='form-control ')}}
@@ -32,11 +35,20 @@
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
-                <div class="checkbox">
-                    <label>
-                        {{ form.locked() }} Locked?
-                    </label>
+
+                {{ form.role.label }}
+                <div class="radio">
+                    {{ form.role()}}
+                    {% for error in form.role.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
                 </div>
+                {% if not function == 'new' %}
+                {{ form.locked.label }}
+                <div class="radio">
+                    {{ form.locked() }}
+                </div>
+                {% endif %}
 
                 <div style="float:right;">
                     {{ form.csrf_token }}

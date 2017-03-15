@@ -1,19 +1,12 @@
 {% set parentNav = [
 
     (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
-    (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'Profile'),
     (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'User Management'),
 ] -%}
 
 {% set childNav = [
-    (['User','Superuser','Administrator'], 'userBP.profileView', 'Profile', 'Profile', 'fa-user'),
-    (['User','Superuser','Administrator'], 'authBP.logoutView', 'Log out', 'Profile', 'fa-user'),
-
     (['User','Superuser','Administrator'], 'userBP.userView', 'Users', 'User Management', 'fa-user'),
 ] -%}
-
-
-
 
 <nav class="navbar navbar-default">
     <div class="container-fluid">
@@ -28,14 +21,14 @@
         </div>
         <div class="navbar-collapse collapse" id="navbarCollapse">
             <ul class="nav navbar-nav">
-                {% if session['token'] %}
+            {% if session['token'] %}
                 <li {% if request.endpoint == 'indexBP.indexView' %} class='active' {% endif %}>
                     <a href="{{url_for('indexBP.indexView')}}"><i class="fa fa-home"></i> Home</a>
                 </li>
 
                 {% for authList, class, span, title in parentNav %}
                 <li>
-                <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"><i class="fa {{class}}"></i> {{title}}<span class="caret"></span></a>
+                <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"><i class="fa {{class}}"></i> {{title}} <span class="caret"></span></a>
 
                     <ul class="dropdown-menu">
                         {% for authList2,  view, header, parent, class in childNav %}
@@ -48,25 +41,43 @@
                     </ul>
 
                 </li>
-
                 {% endfor %}
+            </ul>
 
-                {% else %}
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button">{{session['email']}}&nbsp;<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('userBP.profileView')}}">Profile</a></li>
+                        <li class="divider"></li>
+                        <li><a href="{{url_for('authBP.logoutView')}}">Log out</a></li>
+                    </ul>
+                </li>
+            </ul>
+
+            {% else %}
 
                 <li {% if request.endpoint == 'indexBP.indexView' %} class='active' {% endif %}>
                     <a href="{{url_for('indexBP.indexView')}}">Home</a>
                 </li>
-                <li {% if request.endpoint == 'authBP.loginView' %} class='active' {% endif %}>
-                    <a href="{{url_for('authBP.loginView')}}">Log in</a>
-                </li>
+
+            </ul>
+
+            <ul class="nav navbar-nav navbar-right">
                 <li {% if request.endpoint == 'authBP.registerView' %} class='active' {% endif %}>
                     <a href="{{url_for('authBP.registerView')}}">Register account</a>
                 </li>
-
-                {% endif %}
-
+                <li {% if request.endpoint == 'authBP.loginView' %} class='active' {% endif %}>
+                    <a href="{{url_for('authBP.loginView')}}">Log in</a>
+                </li>
 
             </ul>
+
+            {% endif %}
+
+
+
+
         </div>
     </div>
 </nav>
