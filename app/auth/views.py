@@ -86,11 +86,17 @@ def registerView():
     return render_template('auth/register.html', form=form)
 
 # setPasswordView
-@authBP.route('/setPassword', methods=['GET','POST'])
-def setPasswordView():
+@authBP.route('/setPassword/<string:tok>', methods=['GET','POST'])
+def setPasswordView(tok=None):
     form = setPasswordForm()
     if form.validate_on_submit():
-        return 'hej'
+        dataDict={'password':form.password.data}
+        req = authAPI('setPassword', method='post', dataDict=dataDict, token=tok)
+        if 'error' in req:
+            errorMessage(req['error'])
+        elif 'success' in req:
+            successMessage('Your password has now been set, please login')
+            return redirect(url_for('authBP.loginView'))
     return render_template('auth/setPassword.html', form=form)
 
 # confirmEmailView
@@ -103,17 +109,17 @@ def confirmEmailView(token):
     else:
         req = authAPI('confirm', method='post', token=token)
         if 'error' in req:
-            errorMessage(req['error'])
-
-        elif 'success' in req:
-            if req['mustSetPass'] == 'True':
+            if req['error'] == 'User must set password':
                 successMessage('Your profile has been confirmed, please set your new password')
                 return redirect(url_for('authBP.setPasswordView', tok=req['token']))
             else:
-                successMessage('Your profile has been confirmed, please login')
-                return redirect(url_for('authBP.loginView'))
+                errorMessage(req['error'])
 
-    return redirect(url_for('indexView'))
+        elif 'success' in req:
+            successMessage('Your profile has been confirmed, please login')
+            return redirect(url_for('authBP.loginView'))
+
+    return redirect(url_for('indexBP.indexView'))
 
 # logoutView
 @authBP.route('/logout', methods=['GET','POST'])

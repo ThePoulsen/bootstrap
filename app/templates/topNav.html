@@ -1,11 +1,12 @@
 {% set parentNav = [
 
     (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
-    (['User','Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'User Management'),
+    (['Superuser','Administrator'], 'fa-user', 'fa-chevron-down', 'User Management'),
 ] -%}
 
 {% set childNav = [
-    (['User','Superuser','Administrator'], 'userBP.userView', 'Users', 'User Management', 'fa-user'),
+    (['Superuser','Administrator'], 'userBP.userView', 'Users', 'User Management', 'fa-user'),
+    (['Superuser','Administrator'], 'userBP.groupView', 'Groups', 'User Management', 'fa-users'),
 ] -%}
 
 <nav class="navbar navbar-default">

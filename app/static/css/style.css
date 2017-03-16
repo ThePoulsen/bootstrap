@@ -14,3 +14,8 @@ body {
 .tableButtons {
     width:20px;
 }
+
+textarea.form-control {
+    max-width: 100%;
+    min-width: 100%;
+}
