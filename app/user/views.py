@@ -28,6 +28,7 @@ def profileView():
 def userView(function=None, uuid=None):
     kwargs = {'title':'System users',
               'noLocked':False}
+
     if function == 'details' and uuid != None:
         user = authAPI(endpoint='user/'+uuid+'?includeRoles=True&includeGroups=True', method='get', token=session['token'])
         if 'user' in user:
@@ -39,6 +40,13 @@ def userView(function=None, uuid=None):
     elif function == 'edit' and uuid != None:
         user = authAPI(endpoint='user/'+uuid+'?includeRoles=True&includeGroups=True', method='get', token=session['token'])
         kwargs['contentTitle'] = 'Edit User'
+
+        groups = authAPI(endpoint='group', method='get', token=session['token'])
+
+        if 'groups' in groups:
+            groups = [(g['uuid'], g['name']) for g in groups['groups']]
+        else:
+            groups = []
 
         if 'user' in user:
             if not 'Administrator' in session['roles']:
@@ -67,23 +75,16 @@ def userView(function=None, uuid=None):
             form = userForm(name=user['user']['name'],
                             email=user['user']['email'],
                             phone=user['user']['phone'],
-                            role=role,
-                            locked=locked)
+                            role=role, locked=locked,
+                            groups = [g['uuid'] for g in user['user']['groups']])
 
+            form.groups.choices = groups
 
             if form.validate_on_submit():
                 dataDict = {'name': form.name.data,
                             'email': form.email.data,
-                            'phone': form.phone.data}
-                dataDict['groups'] = []
-
-                if form.role.data != role:
-                    if user['user']['isContact'] == True:
-                        errorMessage('You cannot change contact person roles')
-                    else:
-                        dataDict['roles'] = [form.role.data]
-                else:
-                    dataDict['roles'] = [form.role.data]
+                            'phone': form.phone.data,
+                            'groups': form.groups.data}
 
                 if form.locked.data != locked:
                     if form.locked.data == 'Locked':
@@ -94,7 +95,19 @@ def userView(function=None, uuid=None):
                     if 'error' in lockUser:
                         errorMessage(lockUser['error'])
 
+
+                if form.role.data != role:
+                    if user['user']['isContact'] == True:
+                        errorMessage('You cannot change contact person roles')
+                        return render_template('user/userForm.html', form=form, **kwargs)
+                    else:
+                        dataDict['roles'] = [form.role.data]
+                else:
+                    dataDict['roles'] = [form.role.data]
+
+
                 updateUser = authAPI(endpoint='user/'+unicode(uuid), method='put', dataDict=dataDict, token=session['token'])
+
                 if not 'error' in updateUser:
                     successMessage(unicode(updateUser['success']))
                     return redirect(url_for('userBP.userView'))
@@ -109,7 +122,7 @@ def userView(function=None, uuid=None):
     elif function == 'delete' and uuid != None:
         req = authAPI(endpoint='user/'+unicode(uuid), method='delete', token=session['token'])
         if 'success' in req:
-            successMessage(unicode(updateUser['User has been deleted']))
+            successMessage('User has been deleted')
             return redirect(url_for('userBP.userView'))
         elif 'error' in req:
             errorMessage(req['error'])
@@ -118,16 +131,25 @@ def userView(function=None, uuid=None):
     elif function == 'new' and uuid == None:
         kwargs['noLocked'] = True
         kwargs['contentTitle'] = 'New User'
+
+        groups = authAPI(endpoint='group', method='get', token=session['token'])
+
+        if 'groups' in groups:
+            groups = [(g['uuid'], g['name']) for g in groups['groups']]
+        else:
+            groups = []
+
         form = userForm(role='User',
                         locked='Unlocked')
+
+        form.groups.choices = groups
 
         if form.validate_on_submit():
             dataDict = {'name': form.name.data,
                         'email': form.email.data,
-                        'phone': form.phone.data}
-
+                        'phone': form.phone.data,
+                        'groups': form.groups.data}
             dataDict['roles'] = [form.role.data]
-            dataDict['groups'] = []
 
             req = authAPI('user', method='post', dataDict=dataDict, token=session['token'])
 
@@ -136,30 +158,34 @@ def userView(function=None, uuid=None):
 
             elif 'success' in req:
                 # send email confirmation
-                subject = u'Please confirm your account'
-                tok = req['token']
-                email = form.email.data
-                confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
-                html = render_template('email/verify.html', confirm_url=confirm_url)
+                if os.environ['sendMail'] == 'True':
+                    subject = u'Please confirm your account'
+                    tok = req['token']
+                    email = form.email.data
+                    confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
+                    html = render_template('email/verify.html', confirm_url=confirm_url)
 
-                sendMail(subject=subject,
-                         sender=os.environ['mailSender'],
-                         recipients=[email],
-                         html_body=html,
-                         text_body = None)
+                    sendMail(subject=subject,
+                             sender=os.environ['mailSender'],
+                             recipients=[email],
+                             html_body=html,
+                             text_body = None)
+
                 successMessage('User has been added')
                 return redirect(url_for('userBP.userView'))
 
         return render_template('user/userForm.html', form=form, **kwargs)
 
-    # Get users
     elif function == None:
         users = authAPI(endpoint='user?includeRoles=True&includeGroups=True', method='get', token=session['token'])
+
+#        return jsonify(users)
 
         if not 'error' in users:
             users = users['users']
             users = sorted(users, key=lambda k: k['name'])
             tableData = []
+
             for u in users:
                 roles = ''
                 for r in u['roles']:
@@ -200,7 +226,8 @@ def groupView(function=None, uuid=None):
     if function == None:
         try:
             groups = authAPI(endpoint='group?includeUsers=True', method='get', token=session['token'])['groups']
-            kwargs['tableData'] = [[g['uuid'], g['name'], g['desc'],''] for g in groups]
+
+            kwargs['tableData'] = [[g['uuid'], g['name'], g['desc'], len([u['uuid'] for u in g['users']])] for g in groups]
         except:
             pass
         kwargs['tableColumns'] = ['Group name', 'Description','Users']
@@ -213,11 +240,33 @@ def groupView(function=None, uuid=None):
             errorMessage('Group info could not be fetched')
 
     elif function == 'edit':
-        form = groupForm()
         kwargs['contentTitle'] = 'Edit group'
 
+        group = authAPI(endpoint='group/'+unicode(uuid)+'?includeUsers=True', method='get', token=session['token'])['group']
+
+        users = authAPI(endpoint='user?includeRoles=True&includeGroups=True', method='get', token=session['token'])
+
+        form = groupForm(name=group['name'],
+                         desc=group['desc'],
+                         users=[g['uuid'] for g in group['users']])
+
+        if not 'error' in users:
+            users = users['users']
+            users = sorted(users, key=lambda k: k['name'])
+            form.users.choices = [(u['uuid'],u['name']+'  -  '+u['email']) for u in users]
+
+
         if form.validate_on_submit():
-            return 'hej'
+            dataDict = {'name': form.name.data,
+                        'desc':form.desc.data,
+                        'users':form.users.data}
+            req = authAPI(endpoint='group/'+unicode(uuid), method='put', dataDict=dataDict, token=session['token'])
+
+            if not 'error' in req:
+                successMessage('Group has been modified')
+                return redirect(url_for('userBP.groupView'))
+            else:
+                errorMessage(req['error'])
         return render_template('user/groupForm.html', form=form, **kwargs)
 
     elif function == 'new':

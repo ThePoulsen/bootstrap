@@ -36,6 +36,14 @@
                     {% endfor %}
                 </div>
 
+                <div class="form-group">
+                    {{ form.groups.label }}
+                    {{ form.groups(class_='form-control')}}
+                    {% for error in form.groups.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
                 {{ form.role.label }}
                 <div class="radio">
                     {{ form.role()}}
