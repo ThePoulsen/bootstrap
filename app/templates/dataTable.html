@@ -8,11 +8,13 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-    $('#dataTable').DataTable(
+    var oTable =  $('#dataTable').DataTable(
         {
+            "info": false,
+            "paging": false,
             "columns":
                         [
-                            {% for row in tableColumns %}
+                            {% for row in listColumns %}
                                 null,
                             {% endfor %}
 
@@ -34,117 +36,126 @@ $(document).ready(function() {
                         ]
         }
     );
+
+    $('#myInputTextField').keyup(function(){
+      oTable.search($(this).val()).draw() ;
+    } );
 } );
+
 </script>
 {% endblock %}
 
 {% block pageContent %}
 <div class="panel panel-default" style="max-width:{{maxDataTableWidth}}px;min-width:{{minDataTableWidth}}px">
-    <div class="panel-heading">
-        <h3 class="panel-title">{{title}}</h3>
+    <div class="panel-heading row" style="margin-right:0px;margin-left:0px;">
+        <div class="col col-xs-6 col-sm-6 col-md-7">
+            <h3 class="panel-title">{{title}}</h3>
+        </div>
+        <div class="col col-xs-6 col-sm-6 col-md-5">
+            <div class="input-group input-group-sm">
+                <span class="input-group-addon" id="sizing-addon3">Search</span>
+                <input type="text" class="form-control" id="myInputTextField" aria-describedby="sizing-addon3">
+                <span class="input-group-addon" id="sizing-addon3"><i class="fa fa-search" aria-hidden="true"></i></span>
+            </div>
+        </div>
     </div>
-    <div class="panel-body" style="padding-bottom:5px;">
+    <div class="panel-body">
         <table id="dataTable" class="table table-hover table-condensed" cellspacing="0" width="100%">
-        <thead>
-            <tr>
-            {% for c in tableColumns %}
-                <th>{{ c|safe }}</th>
-            {% endfor %}
-
-            {% if not withoutDetailsButton %}
-                <th class="tableButtons"></th>
-            {% endif %}
-
-            {% if not withoutEditButton %}
-                <th class="tableButtons"></th>
-            {% endif %}
-
-            {% if not withoutDeleteButton %}
-                <th class="tableButtons"></th>
-            {% endif %}
-
-            {% if not withoutNewButton %}
-                <th class="tableButtons">
-                    <a href="{{ request.path }}/new">
-                        <i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i>
-                    </a>
-                </th>
-            {% endif %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for row in tableData %}
-            <tr>
-                {% for column in row[1:] %}
-                    {% if column is iterable and column is not string %}
-                        <td>
-                            {% for r in column %}
-                                {{r}} <br>
-                            {% endfor %}
-                        </td>
-                    {% else %}
-                        <td>{{ column|safe }}</td>
-                    {% endif %}
+            <thead>
+                <tr>
+                {% for c in listColumns %}
+                    <th>{{ c|safe }}</th>
                 {% endfor %}
 
-                {% if not withoutNewButton %}
-                    <td class="tableButtons"></td>
-                {% endif %}
-
                 {% if not withoutDetailsButton %}
-                    <td class="tableButtons">
-                        <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
-                            <input type='hidden' class="updateButton" type="submit" value="Update">
-                        </form>
-                        <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
-                            <i class="fa fa-search" data-toggle="tooltip" title="View row details"></i>
-                        </a>
-                    </td>
+                    <th class="tableButtons"></th>
                 {% endif %}
 
                 {% if not withoutEditButton %}
-                    <td class="tableButtons">
-                        <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
-                            <input type='hidden' class="updateButton" type="submit" value="Edit">
-                        </form>
-                        <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
-                            <i class="fa fa-pencil" data-toggle="tooltip" title="Edit row"></i>
-                        </a>
-                    </td>
-
+                    <th class="tableButtons"></th>
                 {% endif %}
 
                 {% if not withoutDeleteButton %}
-                    <td class="tableButtons">
-                        <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
-                            <input type='hidden' class="updateButton" type="submit" value="Edit">
-                        </form>
-                        <a href="#" data-toggle="modal" data-target=".deleteModal{{row[0]}}">
-                            <i class="fa fa-times" data-toggle="tooltip" title="Delete row"></i>
-                        </a>
-                    </td>
+                    <th class="tableButtons"></th>
                 {% endif %}
-            </tr>
-        {% endfor %}
 
-        </tbody>
-    </table>
+                {% if not withoutNewButton %}
+                    <th class="tableButtons">
+                        <a href="{{ request.path }}/new">
+                            <i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i>
+                        </a>
+                    </th>
+                {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in listData %}
+                <tr>
+                    {% for column in row[1:] %}
+                        {% if column is iterable and column is not string %}
+                            <td>
+                                {% for r in column %}
+                                    {{r}} <br>
+                                {% endfor %}
+                            </td>
+                        {% else %}
+                            <td>{{ column|safe }}</td>
+                        {% endif %}
+                    {% endfor %}
 
+                    {% if not withoutNewButton %}
+                        <td class="tableButtons"></td>
+                    {% endif %}
 
-    {% include 'modal/deleteModal.html' %}
-    <script type="text/javascript">
-        function confirm_click(){ return confirm("Are you sure ?");}
-    </script>
+                    {% if not withoutDetailsButton %}
+                        <td class="tableButtons">
+                            <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
+                                <input type='hidden' class="updateButton" type="submit" value="Update">
+                            </form>
+                            <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
+                                <i class="fa fa-search" data-toggle="tooltip" title="View row details"></i>
+                            </a>
+                        </td>
+                    {% endif %}
 
+                    {% if not withoutEditButton %}
+                        <td class="tableButtons">
+                            <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
+                                <input type='hidden' class="updateButton" type="submit" value="Edit">
+                            </form>
+                            <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
+                                <i class="fa fa-pencil" data-toggle="tooltip" title="Edit row"></i>
+                            </a>
+                        </td>
+
+                    {% endif %}
+
+                    {% if not withoutDeleteButton %}
+                        <td class="tableButtons">
+                            <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
+                                <input type='hidden' class="updateButton" type="submit" value="Edit">
+                            </form>
+                            <a href="#" data-toggle="modal" data-target=".deleteModal{{row[0]}}">
+                                <i class="fa fa-times" data-toggle="tooltip" title="Delete row"></i>
+                            </a>
+                        </td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+
+            </tbody>
+        </table>
     </div>
 </div>
+{% include 'modal/deleteModal.html' %}
+<script type="text/javascript">
+    function confirm_click(){ return confirm("Are you sure ?");}
+</script>
+
 {% endblock %}
 
 {% block scripts %}
 {{super()}}
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
 <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
-
-
-
 {% endblock %}
