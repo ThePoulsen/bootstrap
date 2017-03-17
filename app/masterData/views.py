@@ -3,6 +3,7 @@
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole
 from app.crud import regionCrud, subRegionCrud
+from forms import regionForm
 
 mdBP = Blueprint('mdBP', __name__)
 
@@ -15,26 +16,42 @@ mdBP = Blueprint('mdBP', __name__)
 def regionView(function=None, uuid=None):
     # Universal vars
     viewName = 'Region list'
+    viewURL = 'regionView'
     tableColumns = ['Region', 'Region abbreviation']
     tableData = regionCrud.getRegions()
-    
+    templateView = 'masterData/region.html'
+    form = regionForm()
+    postCrud = regionCrud.postRegion
+    postData = {'title':form.title.data,
+                'abbr':form.abbr.data}
     
     # View kwargs
-    kwargs = {'title': viewName}    
+    kwargs = {'title': viewName,
+              'maxDataTableWidth': '700',
+              'minDataTableWidth': '500'}
     
     # Build list of all rows
     if function == None:
         kwargs['tableColumns'] = tableColumns
         kwargs['tableData'] = tableData
         
-        return render_template('listView.html', **kwargs)
+        return render_template('dataTable.html', **kwargs)
     
     # Create new row
     elif function == 'new':
         # Function kwargs
         kwargs = {'contentTitle': 'Add new {}'.format(viewName)}
         
-        pass
+        if form.validate_on_submit():
+            req = postCrud(data = postData)
+            if 'success' in req:
+                successMessage(req['success'])
+                return redirect(url_for(viewURL))
+            elif 'error' in req:
+                errorMessage(req['error'])
+
+        return render_template(templateView, form=form, **kwargs)
+
     
     # View single row details
     elif function == 'details' and uuid != None:

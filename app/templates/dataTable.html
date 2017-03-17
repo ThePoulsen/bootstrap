@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}This is an example page{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#dataTable').DataTable(
+        {
+            "columns":
+                        [
+                            {% for row in tableColumns %}
+                                null,
+                            {% endfor %}
+
+                            {% if not withoutDetailsButton %}
+                                { "orderable": false },
+                            {% endif %}
+
+                            {% if not withoutEditButton %}
+                                 { "orderable": false },
+                            {% endif %}
+
+                            {% if not withoutDeleteButton %}
+                                 { "orderable": false },
+                            {% endif %}
+
+                            {% if not withoutNewButton %}
+                                 { "orderable": false },
+                            {% endif %}
+                        ]
+        }
+    );
+} );
+</script>
+{% endblock %}
+
+{% block pageContent %}
+<div class="panel panel-default" style="max-width:{{maxDataTableWidth}}px;min-width:{{minDataTableWidth}}px">
+    <div class="panel-heading">
+        <h3 class="panel-title">{{title}}</h3>
+    </div>
+    <div class="panel-body" style="padding-bottom:5px;">
+        <table id="dataTable" class="table table-hover table-condensed" cellspacing="0" width="100%">
+        <thead>
+            <tr>
+            {% for c in tableColumns %}
+                <th>{{ c|safe }}</th>
+            {% endfor %}
+
+            {% if not withoutDetailsButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutEditButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutDeleteButton %}
+                <th class="tableButtons"></th>
+            {% endif %}
+
+            {% if not withoutNewButton %}
+                <th class="tableButtons">
+                    <a href="{{ request.path }}/new">
+                        <i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i>
+                    </a>
+                </th>
+            {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in tableData %}
+            <tr>
+                {% for column in row[1:] %}
+                    <td>{{ column|safe }}</td>
+                {% endfor %}
+
+                {% if not withoutNewButton %}
+                    <td class="tableButtons"></td>
+                {% endif %}
+
+                {% if not withoutDetailsButton %}
+                    <td class="tableButtons">
+                        <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
+                            <input type='hidden' class="updateButton" type="submit" value="Update">
+                        </form>
+                        <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
+                            <i class="fa fa-search" data-toggle="tooltip" title="View row details"></i>
+                        </a>
+                    </td>
+                {% endif %}
+
+                {% if not withoutEditButton %}
+                    <td class="tableButtons">
+                        <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
+                            <input type='hidden' class="updateButton" type="submit" value="Edit">
+                        </form>
+                        <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
+                            <i class="fa fa-pencil" data-toggle="tooltip" title="Edit row"></i>
+                        </a>
+                    </td>
+
+                {% endif %}
+
+                {% if not withoutDeleteButton %}
+                    <td class="tableButtons">
+                        <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
+                            <input type='hidden' class="updateButton" type="submit" value="Edit">
+                        </form>
+                        <a href="#" data-toggle="modal" data-target=".deleteModal{{row[0]}}">
+                            <i class="fa fa-times" data-toggle="tooltip" title="Delete row"></i>
+                        </a>
+                    </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+
+
+    {% include 'modal/deleteModal.html' %}
+    <script type="text/javascript">
+        function confirm_click(){ return confirm("Are you sure ?");}
+    </script>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{super()}}
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js"></script>
+<script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.10.13/js/dataTables.bootstrap.min.js"></script>
+
+
+
+{% endblock %}
