@@ -1,11 +1,15 @@
 {% set parentNav = [
-
-    (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
+    (['Superuser','Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
+    (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Masterdata'),
 ] -%}
 
 {% set childNav = [
     (['Superuser','Administrator'], 'userBP.userView', 'User management', 'Settings', 'fa-user'),
     (['Superuser','Administrator'], 'userBP.groupView', 'User / Email Groups', 'Settings', 'fa-users'),
+
+    (['Administrator'], 'mdBP.regionView', 'Regions', 'Masterdata', 'fa-'),
+    (['Administrator'], 'mdBP.subRegionView', 'Sub Regions', 'Masterdata', 'fa-'),
+
 ] -%}
 
 <nav class="navbar navbar-default">
@@ -31,7 +35,7 @@
                 <a aria-expanded="false" aria-haspopup="true" class="dropdown-toggle" data-toggle="dropdown" href="#" role="button"><i class="fa {{class}}"></i> {{title}} <span class="caret"></span></a>
 
                     <ul class="dropdown-menu">
-                        {% for authList2,  view, header, parent, class in childNav %}
+                        {% for authList2, view, header, parent, class in childNav %}
                             {% if parent == title %}
                             <li {% if request.endpoint == view %} class='active' {% endif %}>
                                 <a href="{{url_for(view)}}"><i class="fa {{class}}"></i> {{header}}</a>

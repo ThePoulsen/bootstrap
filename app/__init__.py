@@ -27,14 +27,17 @@ flask_sijax.Sijax(app)
 Bootstrap(app)
 
 # Import models
-#from app.api.models import *
+from app.masterData.models import region, subRegion
 
 ## import blueprints
 from .indexView import indexBP
 from app.auth.views import authBP
 from app.user.views import userBP
+from app.masterData.views import mdBP
+
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
 app.register_blueprint(authBP, url_prefix='')
 app.register_blueprint(userBP, url_prefix='')
+app.register_blueprint(mdBP, url_prefix='/masterData')
