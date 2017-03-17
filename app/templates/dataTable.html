@@ -76,7 +76,15 @@ $(document).ready(function() {
             {% for row in tableData %}
             <tr>
                 {% for column in row[1:] %}
-                    <td>{{ column|safe }}</td>
+                    {% if column is iterable and column is not string %}
+                        <td>
+                            {% for r in column %}
+                                {{r}} <br>
+                            {% endfor %}
+                        </td>
+                    {% else %}
+                        <td>{{ column|safe }}</td>
+                    {% endif %}
                 {% endfor %}
 
                 {% if not withoutNewButton %}

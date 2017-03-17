@@ -5,6 +5,7 @@ class region(db.Model):
     __table_args__ = (db.UniqueConstraint('abbr', 'title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String())
     abbr = db.Column(db.String(10))
     title = db.Column(db.String(255))
     tenant_uuid = db.Column(db.String())
@@ -14,6 +15,7 @@ class subRegion(db.Model):
     __table_args__ = (db.UniqueConstraint('abbr', 'title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String())
     abbr = db.Column(db.String(10))
     title = db.Column(db.String(255))
     tenant_uuid = db.Column(db.String())

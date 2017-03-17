@@ -27,11 +27,13 @@
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
-
+                <div style="float:left;">
+                    {{ form.submitStay(class='btn btn-info') }}
+                </div>
                 <div style="float:right;">
                     {{ form.csrf_token }}
                     <a href="{{url_for('mdBP.regionView')}}">Cancel</a> &nbsp
-                    <input type="submit" class="btn btn-primary" tabindex="1" value="Save changes">
+                    {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>
         </div>

@@ -16,14 +16,15 @@ mdBP = Blueprint('mdBP', __name__)
 def regionView(function=None, uuid=None):
     # Universal vars
     viewName = 'Region list'
-    viewURL = 'regionView'
-    tableColumns = ['Region', 'Region abbreviation']
+    viewURL = 'mdBP.regionView'
+    tableColumns = ['Region', 'Region abbreviation', 'Sub Regions']
     tableData = regionCrud.getRegions()
     templateView = 'masterData/region.html'
     form = regionForm()
     postCrud = regionCrud.postRegion
     postData = {'title':form.title.data,
                 'abbr':form.abbr.data}
+    deleteCrud = regionCrud.deleteRegion
     
     # View kwargs
     kwargs = {'title': viewName,
@@ -69,7 +70,12 @@ def regionView(function=None, uuid=None):
     
     # Delete single row
     elif function == 'delete' and uuid != None:
-        pass
+        req = deleteCrud(uuid)
+        if 'success' in req:
+            successMessage(req['success'])
+        elif 'error' in req:
+            errorMessage(req['error'])
+        return redirect(url_for(viewURL))
             
     
 
