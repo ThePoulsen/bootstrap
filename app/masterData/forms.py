@@ -18,7 +18,7 @@ class subRegionForm(FlaskForm):
     title = StringField('Sub Region title',[InputRequired('Please enter a Sub Region title')])
     abbr = StringField('Sub Region Abbreviation', [InputRequired("Please enter an abbreviation for the Sub Region title")])
 
-    regions = SelectField('Sub Regions', widget=select2Widget())
+    region = SelectField('Regions', widget=select2Widget())
 
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')

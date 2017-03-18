@@ -1,7 +1,7 @@
 ## -*- coding: utf-8 -*-
 
 from flask import render_template, Blueprint, request, session, redirect, url_for
-from app.services.services import errorMessage, successMessage, loginRequired, requiredRole
+from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
 from app.crud import regionCrud, subRegionCrud
 from forms import regionForm, subRegionForm
 
@@ -86,10 +86,13 @@ def regionView(function=None, uuid=None):
     # View single row details
     elif function == 'details' and uuid != None:
         # Function kwargs
+        data = getCrud(uuid)
         kwargs = {'contentTitle': '{} details'.format(viewName),
                   'details': True,
-                  'detailsData':getCrud(uuid),
-                  'submitStay': False}
+                  'detailsData':data,
+                  'submitStay': False,
+                  'modifiedUser':getUser(data.modifiedBy),
+                  'createdUser':getUser(data.createdBy)}
         
         return render_template(templateView, **kwargs)
     
@@ -123,8 +126,8 @@ def regionView(function=None, uuid=None):
 
 # profileView
 @mdBP.route('/subRegion', methods=['GET','POST'])
-@mdBP.route('/subregion/<string:function>', methods=['GET','POST'])
-@mdBP.route('/subregion/<string:function>/<string:uuid>', methods=['GET','POST'])
+@mdBP.route('/subRegion/<string:function>', methods=['GET','POST'])
+@mdBP.route('/subRegion/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator'])
 def subRegionView(function=None, uuid=None):
@@ -150,23 +153,22 @@ def subRegionView(function=None, uuid=None):
     postForm = subRegionForm()
     postData = {'title':postForm.title.data,
                 'abbr':postForm.abbr.data,
-                'Region':postForm.regions.data}
+                'region':postForm.region.data}
 
     putForm = subRegionForm()
     putData = {'title':putForm.title.data,
                'abbr':putForm.abbr.data,
-               'region':putForm.regions.data}
+               'region':putForm.region.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'reg = [r.uuid for r in data.region]',
-                'putForm = regionForm(title=data.title,abbr=data.abbr,region=reg)',
+                'putForm = subRegionForm(title=data.title,abbr=data.abbr,region=data.region.uuid)',
                 'regions = regionCrud.regionSelectData()',
-                'putForm.regions.choices = regions']
+                'putForm.region.choices = regions']
 
     # Post variables
     postExecs = ['regions = regionCrud.regionSelectData()',
-                 'postForm.regions.choices = regions']
+                 'postForm.region.choices = regions']
 
     # --------------------------------------------------------------------------------------------
     # CRUD Views (Do not touch!)
@@ -200,10 +202,13 @@ def subRegionView(function=None, uuid=None):
     # View single row details
     elif function == 'details' and uuid != None:
         # Function kwargs
+        data = getCrud(uuid)
         kwargs = {'contentTitle': '{} details'.format(viewName),
                   'details': True,
-                  'detailsData':getCrud(uuid),
-                  'submitStay': False}
+                  'detailsData':data,
+                  'submitStay': False,
+                  'modifiedUser':getUser(data.modifiedBy),
+                  'createdUser':getUser(data.createdBy)}
         
         return render_template(templateView, **kwargs)
     

@@ -1,8 +1,9 @@
 from app import db
 from flask import session
-from app.masterData.models import region, subRegion
+from app.masterData.models import region
 import uuid as UUID
 from datetime import datetime
+import subRegionCrud
 
 def getRegions():
     return region.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
@@ -19,7 +20,7 @@ def postRegion(data):
                  createdBy=session['user_uuid'])
     if data['subRegions']:
         for sr in data['subRegions']:
-            row.subRegions.append(subRegion.query.filter_by(uuid=unicode(sr)).first())
+            row.subRegions.append(subRegionCrud(unicode(sr)))
 
     try:
         db.session.add(row)
@@ -32,16 +33,16 @@ def postRegion(data):
             return {'error': unicode(E)}
 
 def putRegion(data, uuid):
-    r = region.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
+    r = getRegion(uuid)
 
     r.title = data['title']
-    r.title = data['abbr']
+    r.abbr = data['abbr']
     r.modified = datetime.now()
     r.modifiedBy = session['user_uuid']
 
     if data['subRegions']:
         for sr in data['subRegions']:
-            r.subRegions.append(subRegion.query.filter_by(uuid=unicode(sr)).first())
+            r.subRegions.append(subRegionCrud(unicode(sr)))
     else:
         r.subRegions[:] = []
 
@@ -55,7 +56,7 @@ def putRegion(data, uuid):
             return {'error': unicode(E)}
 
 def deleteRegion(uuid):
-    r = region.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
+    r = getRegion(uuid)
     try:
         db.session.delete(r)
         db.session.commit()
@@ -65,7 +66,7 @@ def deleteRegion(uuid):
 
 def regionSelectData():
     regions = region.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
-    dataList = []
+    dataList = [(0,'Select Region')]
     for r in regions:
         dataList.append((r.uuid, r.title))
     return dataList

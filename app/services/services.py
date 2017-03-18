@@ -16,6 +16,9 @@ def listData(model, **kwargs):
     data = model.query.all()
     return data
 
+def getUser(uuid):
+    return authAPI(endpoint='user/'+unicode(uuid), method='get', token=session['token'])
+
 # SendMail
 def sendMail(subject, sender, recipients, text_body, html_body):
     mesg = Message(subject, sender=sender, recipients=recipients)

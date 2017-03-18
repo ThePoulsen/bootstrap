@@ -39,6 +39,40 @@
                             </table>
                         </td>
                     </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>
+                            {% if createdUser['user'] %}
+                            {{createdUser['user']['name']}}<br>
+                            {{createdUser['user']['email']}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Created Date</td>
+                        <td>
+                            {% if detailsData['created'] %}
+                            {{detailsData['created'].strftime('%Y-%m-%d')}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Modified By</td>
+                        <td>
+                            {% if modifiedUser['user'] %}
+                            {{modifiedUser['user']['name']}}<br>
+                            {{modifiedUser['user']['email']}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Modified Date</td>
+                        <td>
+                            {% if detailsData['modified'] %}
+                            {{detailsData['modified'].strftime('%Y-%m-%d')}}
+                            {% endif %}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
