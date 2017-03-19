@@ -57,16 +57,19 @@ def putRegion(data, uuid):
 
 def deleteRegion(uuid):
     r = getRegion(uuid)
-    try:
-        db.session.delete(r)
-        db.session.commit()
-        return {'success': 'Region deleted'}
-    except Exception as E:
-        return {'error': unicode(E)}
+    if not r.subRegions:
+        try:
+            db.session.delete(r)
+            db.session.commit()
+            return {'success': 'Region deleted'}
+        except Exception as E:
+            return {'error': unicode(E)}
+    else:
+        return {'error': 'You must first remove Sub Regions from Region'}
 
 def regionSelectData():
     regions = region.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
-    dataList = [(0,'Select Region')]
+    dataList = [] #[(0,'Select Region')]
     for r in regions:
         dataList.append((r.uuid, r.title))
     return dataList

@@ -27,7 +27,8 @@ def profileView():
 @requiredRole(['Administrator','Superuser'])
 def userView(function=None, uuid=None):
     kwargs = {'title':'System users',
-              'noLocked':False}
+              'noLocked':False,
+              'withoutDeleteButton': True}
 
     if function == 'details' and uuid != None:
         user = authAPI(endpoint='user/'+uuid+'?includeRoles=True&includeGroups=True', method='get', token=session['token'])

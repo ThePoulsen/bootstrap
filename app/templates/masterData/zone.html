@@ -3,7 +3,7 @@
 {% block title %}User profile{% endblock %}
 
 {% block breadCrumb %}
-    <li><a href="{{url_for('mdBP.subRegionView')}}">Sub Regions</a></li>
+    <li><a href="{{url_for('mdBP.zoneView')}}">Zones</a></li>
 {% endblock %}
 
 {% block pageContent %}
@@ -31,8 +31,8 @@
                         <td>{{detailsData['abbr']}}</td>
                     </tr>
                     <tr>
-                        <td>Region</td>
-                        <td>{{detailsData['region'].abbr}}</td>
+                        <td>Country</td>
+                        <td>{{detailsData['country'].abbr}}</td>
                     </tr>
                     <tr>
                         <td>Created By</td>
@@ -72,7 +72,7 @@
             </table>
 
             {% else %}
-            <form method="post" name="subRegionForm" id="subRegionForm">
+            <form method="post" name="zoneForm" id="zoneForm">
                 <div class="form-group">
                     {{ form.title.label }}
                     {{ form.title(class_='form-control ')}}
@@ -90,13 +90,12 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.region.label }}
-                    {{ form.region(class_='form-control')}}
-                    {% for error in form.region.errors %}
+                    {{ form.country.label }}
+                    {{ form.country(class_='form-control')}}
+                    {% for error in form.country.errors %}
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
-
                 {% if submitStay == False %}
                 {% else %}
                 <div style="float:left;">
@@ -105,7 +104,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{url_for('mdBP.subRegionView')}}">Cancel</a> &nbsp
+                    <a href="{{url_for('mdBP.zoneView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

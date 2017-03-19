@@ -13,6 +13,10 @@ def getSubRegion(uuid):
 
 def postSubRegion(data):
     r = regionCrud.getRegion(data['region'])
+    if r == None:
+        region_id = None
+    else:
+        region_id = r.id
     row = subRegion(title = data['title'],
                     abbr = data['abbr'],
                     tenant_uuid = session['tenant_uuid'],
@@ -35,13 +39,17 @@ def postSubRegion(data):
 def putSubRegion(data, uuid):
     r = getSubRegion(uuid)
     reg = regionCrud.getRegion(data['region'])
+    if reg == None:
+        region_id = None
+    else:
+        region_id = reg.id
 
     r.title = data['title']
     r.abbr = data['abbr']
     r.modified = datetime.now()
     r.modifiedBy = session['user_uuid']
     r.region = reg
-    r.region_id = reg.id
+    r.region_id = region_id
 
     try:
         db.session.commit()
@@ -54,16 +62,19 @@ def putSubRegion(data, uuid):
 
 def deleteSubRegion(uuid):
     r = getSubRegion(uuid)
-    try:
-        db.session.delete(r)
-        db.session.commit()
-        return {'success': 'Region deleted'}
-    except Exception as E:
-        return {'error': unicode(E)}
+    if not r.countries:
+        try:
+            db.session.delete(r)
+            db.session.commit()
+            return {'success': 'Region deleted'}
+        except Exception as E:
+            return {'error': unicode(E)}
+    else:
+        return {'error': 'You must first remove countries from Sub Region'}
 
 def subRegionSelectData():
     subRegions = getSubRegions()
-    dataList = [] #[(0,'')]
+    dataList = [] #[(0,'Select Sub Region')]
     for sr in subRegions:
         dataList.append((sr.uuid, sr.title))
     return dataList
@@ -72,6 +83,6 @@ def subRegionListData():
     subRegions = getSubRegions()
     data = []
     for sr in subRegions:
-        temp = [sr.uuid, sr.title, sr.abbr, sr.region.abbr]
+        temp = [sr.uuid, sr.title, sr.abbr, sr.region.abbr if sr.region else ""]
         data.append(temp)
     return data

@@ -8,17 +8,27 @@ from app.services.services import select2MultipleWidget, select2Widget
 class regionForm(FlaskForm):
     title = StringField('Region title',[InputRequired('Please enter a Region title')])
     abbr = StringField('Region Abbreviation', [InputRequired("Please enter an abbreviation for the Region title")])
-
     subRegions = SelectMultipleField('Sub Regions', widget=select2MultipleWidget())
-
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
 class subRegionForm(FlaskForm):
     title = StringField('Sub Region title',[InputRequired('Please enter a Sub Region title')])
     abbr = StringField('Sub Region Abbreviation', [InputRequired("Please enter an abbreviation for the Sub Region title")])
+    region = SelectField('Region', widget=select2Widget())
+    submit = SubmitField(label='Save')
+    submitStay = SubmitField(label='Save and add new')
 
-    region = SelectField('Regions', widget=select2Widget())
+class countryForm(FlaskForm):
+    title = StringField('Country title',[InputRequired('Please enter a Country name')])
+    abbr = StringField('Country Abbreviation', [InputRequired("Please enter an abbreviation for the Country name")])
+    subRegion = SelectField('Sub Region', widget=select2Widget())
+    submit = SubmitField(label='Save')
+    submitStay = SubmitField(label='Save and add new')
 
+class zoneForm(FlaskForm):
+    title = StringField('Zone title',[InputRequired('Please enter a Zone name')])
+    abbr = StringField('Zone Abbreviation', [InputRequired("Please enter an abbreviation for the Zone name")])
+    country = SelectField('Country', widget=select2Widget())
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
