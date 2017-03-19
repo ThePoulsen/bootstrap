@@ -7,7 +7,6 @@ from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm
 
 mdBP = Blueprint('mdBP', __name__)
 
-# Region View
 @mdBP.route('/region', methods=['GET','POST'])
 @mdBP.route('/region/<string:function>', methods=['GET','POST'])
 @mdBP.route('/region/<string:function>/<string:uuid>', methods=['GET','POST'])
@@ -124,7 +123,6 @@ def regionView(function=None, uuid=None):
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
 
-# Sub Region View
 @mdBP.route('/subRegion', methods=['GET','POST'])
 @mdBP.route('/subRegion/<string:function>', methods=['GET','POST'])
 @mdBP.route('/subRegion/<string:function>/<string:uuid>', methods=['GET','POST'])
@@ -242,7 +240,6 @@ def subRegionView(function=None, uuid=None):
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
 
-# Country View
 @mdBP.route('/country', methods=['GET','POST'])
 @mdBP.route('/country/<string:function>', methods=['GET','POST'])
 @mdBP.route('/country/<string:function>/<string:uuid>', methods=['GET','POST'])
@@ -584,3 +581,83 @@ def statusView(function=None, uuid=None):
         elif 'error' in req:
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
+
+@mdBP.route('/treatmentType', methods=['GET','POST'])
+@mdBP.route('/treatmentType/<string:function>', methods=['GET','POST'])
+@mdBP.route('/treatmentType/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def treatmentTypeView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/riskResponse', methods=['GET','POST'])
+@mdBP.route('/riskResponse/<string:function>', methods=['GET','POST'])
+@mdBP.route('/riskResponse/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def riskResponseView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/eventType', methods=['GET','POST'])
+@mdBP.route('/eventType/<string:function>', methods=['GET','POST'])
+@mdBP.route('/eventType/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def eventTypeView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/severity', methods=['GET','POST'])
+@mdBP.route('/severity/<string:function>', methods=['GET','POST'])
+@mdBP.route('/severity/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def severityView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/likelihood', methods=['GET','POST'])
+@mdBP.route('/likelihood/<string:function>', methods=['GET','POST'])
+@mdBP.route('/likelihood/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def likelihoodView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/causingFactor', methods=['GET','POST'])
+@mdBP.route('/causingFactor/<string:function>', methods=['GET','POST'])
+@mdBP.route('/causingFactor/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def causingFactorView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/processArea', methods=['GET','POST'])
+@mdBP.route('/processArea/<string:function>', methods=['GET','POST'])
+@mdBP.route('/processArea/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def processAreaView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/riskArea', methods=['GET','POST'])
+@mdBP.route('/riskArea/<string:function>', methods=['GET','POST'])
+@mdBP.route('/riskArea/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def riskAreaView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/riskType', methods=['GET','POST'])
+@mdBP.route('/riskType/<string:function>', methods=['GET','POST'])
+@mdBP.route('/riskType/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def riskTypeView(function=None, uuid=None):
+    pass
+
+@mdBP.route('/valueChainArea', methods=['GET','POST'])
+@mdBP.route('/valueChainArea/<string:function>', methods=['GET','POST'])
+@mdBP.route('/valueChainArea/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def valueChainAreaView(function=None, uuid=None):
+    pass
