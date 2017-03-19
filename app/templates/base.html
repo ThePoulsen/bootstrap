@@ -27,6 +27,13 @@
     {% include "topNav.html" %}
     </div>
 
+
+    <ol class="breadcrumb">
+        <li><a href="{{url_for('indexBP.indexView')}}">Home</a></li>
+        {% block breadCrumb %}{% endblock %}
+    </ol>
+
+
     <div class="row">
         <div class="container-fluid">
             <div class="col col-12" style="max-width:600px;">

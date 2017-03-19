@@ -3,6 +3,7 @@
 from flask import render_template, Blueprint, flash
 from services.services import errorMessage, successMessage
 from markupsafe import escape
+from app import app
 
 indexBP = Blueprint('indexBP', __name__)
 

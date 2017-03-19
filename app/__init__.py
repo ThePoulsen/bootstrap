@@ -1,6 +1,6 @@
 ## -*- coding: utf-8 -*-
 
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 import flask_sijax
@@ -34,7 +34,6 @@ from .indexView import indexBP
 from app.auth.views import authBP
 from app.user.views import userBP
 from app.masterData.views import mdBP
-
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
