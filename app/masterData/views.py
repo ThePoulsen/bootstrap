@@ -2,8 +2,8 @@
 
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
-from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud
-from forms import regionForm, subRegionForm, countryForm, zoneForm
+from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud
+from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm
 
 mdBP = Blueprint('mdBP', __name__)
 
@@ -406,6 +406,114 @@ def zoneView(function=None, uuid=None):
     postExecs = ['countries = countryCrud.countrySelectData()',
                  'countries.insert(0,("0","Select Country"))',
                  'postForm.country.choices = countries']
+
+    # --------------------------------------------------------------------------------------------
+    # CRUD Views (Do not touch!)
+    # Build list of all rows
+    if function == None:
+        kwargs['listColumns'] = listColumns
+        kwargs['listData'] = listCrud()
+        return render_template('dataTable.html', **kwargs)
+
+    # Create new row
+    elif function == 'new':
+        # Function kwargs
+        kwargs = {'contentTitle': 'Add new {}'.format(viewName),
+                  'submitStay': True}
+
+        for r in postExecs:
+            exec(r)
+
+        if postForm.validate_on_submit():
+            req = postCrud(data = postData)
+            if 'success' in req:
+                successMessage(req['success'])
+                if not postForm.submitStay.data:
+                    return redirect(url_for(viewURL))
+                else:
+                    return redirect(url_for(viewURL)+'/new')
+            elif 'error' in req:
+                errorMessage(req['error'])
+        return render_template(templateView, form=postForm, **kwargs)
+
+    # View single row details
+    elif function == 'details' and uuid != None:
+        # Function kwargs
+        data = getCrud(uuid)
+        kwargs = {'contentTitle': '{} details'.format(viewName),
+                  'details': True,
+                  'detailsData':data,
+                  'submitStay': False,
+                  'modifiedUser':getUser(data.modifiedBy),
+                  'createdUser':getUser(data.createdBy)}
+
+        return render_template(templateView, **kwargs)
+
+    # Edit single row
+    elif function == 'edit' and uuid != None:
+        # Function kwargs
+        kwargs = {'contentTitle': 'Edit {}'.format(viewName),
+                  'submitStay': False}
+
+        for r in putExecs:
+            exec(r)
+
+        if putForm.validate_on_submit():
+            req = putCrud(data=putData, uuid=uuid)
+            if 'success' in req:
+                successMessage(req['success'])
+                return redirect(url_for(viewURL))
+            elif 'error' in req:
+                errorMessage(req['error'])
+
+        return render_template(templateView, form=putForm, **kwargs)
+
+    # Delete single row
+    elif function == 'delete' and uuid != None:
+        req = deleteCrud(uuid)
+        if 'success' in req:
+            successMessage(req['success'])
+        elif 'error' in req:
+            errorMessage(req['error'])
+        return redirect(url_for(viewURL))
+
+@mdBP.route('/status', methods=['GET','POST'])
+@mdBP.route('/status/<string:function>', methods=['GET','POST'])
+@mdBP.route('/status/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def statusView(function=None, uuid=None):
+    # Universal vars
+    viewName = 'Status'
+    viewURL = 'mdBP.statusView'
+    listColumns = ['Status']
+    templateView = 'masterData/status.html'
+
+    # View kwargs
+    kwargs = {'title': viewName+' list',
+              'maxDataTableWidth': '700',
+              'minDataTableWidth': '500',
+              'details': False}
+
+    # Cruds
+    listCrud = statusCrud.statusListData
+    getCrud = statusCrud.getStatus
+    postCrud = statusCrud.postStatus
+    putCrud = statusCrud.putStatus
+    deleteCrud = statusCrud.deleteStatus
+
+    postForm = statusForm()
+    postData = {'title':postForm.title.data}
+
+    putForm = statusForm()
+    putData = {'title':putForm.title.data}
+
+    # put variables
+    putExecs = ['data = getCrud(uuid)',
+                'putForm = statusForm(title=data.title)']
+
+    # Post variables
+    postExecs = []
 
     # --------------------------------------------------------------------------------------------
     # CRUD Views (Do not touch!)

@@ -20,15 +20,20 @@ class subRegionForm(FlaskForm):
     submitStay = SubmitField(label='Save and add new')
 
 class countryForm(FlaskForm):
-    title = StringField('Country title',[InputRequired('Please enter a Country name')])
-    abbr = StringField('Country Abbreviation', [InputRequired("Please enter an abbreviation for the Country name")])
+    title = StringField('Country title',[InputRequired('Please enter a Country title')])
+    abbr = StringField('Country Abbreviation', [InputRequired("Please enter an abbreviation for the Country title")])
     subRegion = SelectField('Sub Region', widget=select2Widget())
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
 class zoneForm(FlaskForm):
-    title = StringField('Zone title',[InputRequired('Please enter a Zone name')])
-    abbr = StringField('Zone Abbreviation', [InputRequired("Please enter an abbreviation for the Zone name")])
+    title = StringField('Zone title',[InputRequired('Please enter a Zone title')])
+    abbr = StringField('Zone Abbreviation', [InputRequired("Please enter an abbreviation for the Zone title")])
     country = SelectField('Country', widget=select2Widget())
+    submit = SubmitField(label='Save')
+    submitStay = SubmitField(label='Save and add new')
+
+class statusForm(FlaskForm):
+    title = StringField('Status title',[InputRequired('Please enter a Status title')])
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
