@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}User profile{% endblock %}
+
+{% block breadCrumb %}
+    <li><a href="{{url_for('mdBP.eventTypeView')}}">Event Types</a></li>
+{% endblock %}
+
+{% block pageContent %}
+<div class="col col-10 col-sm-7 col-md-6 col-lg-4 col-xl-3">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">{{contentTitle|safe}}</h1>
+        </div>
+        <div class="panel-body">
+            {% if details == True %}
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Title</td>
+                        <td>{{detailsData['title']}}</td>
+                    </tr>
+                    <tr>
+                        <td>Description</td>
+                        <td>{{detailsData['desc']}}</td>
+                    </tr>
+                    <tr>
+                        <td>Created By</td>
+                        <td>
+                            {% if createdUser['user'] %}
+                            {{createdUser['user']['name']}}<br>
+                            {{createdUser['user']['email']}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Created Date</td>
+                        <td>
+                            {% if detailsData['created'] %}
+                            {{detailsData['created'].strftime('%Y-%m-%d')}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Modified By</td>
+                        <td>
+                            {% if modifiedUser['user'] %}
+                            {{modifiedUser['user']['name']}}<br>
+                            {{modifiedUser['user']['email']}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Modified Date</td>
+                        <td>
+                            {% if detailsData['modified'] %}
+                            {{detailsData['modified'].strftime('%Y-%m-%d')}}
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            {% else %}
+            <form method="post" name="eventTypeForm" id="eventTypeForm">
+                <div class="form-group">
+                    {{ form.title.label }}
+                    {{ form.title(class_='form-control ')}}
+                    {% for error in form.title.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.desc.label }}
+                    {{ form.desc(class_='form-control')}}
+                    {% for error in form.desc.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
+                {% if submitStay == False %}
+                {% else %}
+                <div style="float:left;">
+                    {{ form.submitStay(class='btn btn-info') }}
+                </div>
+                {% endif %}
+                <div style="float:right;">
+                    {{ form.csrf_token }}
+                    <a href="{{{{url_for('mdBP.eventTypeView')}}}}">Cancel</a> &nbsp
+                    {{ form.submit(class='btn btn-primary') }}
+                </div>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
