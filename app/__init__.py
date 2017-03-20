@@ -27,7 +27,8 @@ flask_sijax.Sijax(app)
 Bootstrap(app)
 
 # Import models
-from app.masterData.models import region, subRegion
+from app.masterData.models import *
+from app.user.models import *
 
 ## import blueprints
 from .indexView import indexBP

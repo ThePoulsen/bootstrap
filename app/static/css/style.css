@@ -45,3 +45,11 @@ table.dataTable thead .sorting_desc:after {
     margin-top: 8px;
         font-size: 16px;
 }
+
+.radio ul{
+    padding-left:20px;
+}
+
+.radio label{
+    padding-left:10px;
+}

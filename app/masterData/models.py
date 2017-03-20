@@ -6,7 +6,7 @@ class region(db.Model):
                       db.UniqueConstraint('abbr', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     abbr = db.Column(db.String(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -21,7 +21,7 @@ class subRegion(db.Model):
                       db.UniqueConstraint('abbr', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     abbr = db.Column(db.String(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -39,7 +39,7 @@ class country(db.Model):
                       db.UniqueConstraint('abbr', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     abbr = db.Column(db.String(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -57,7 +57,7 @@ class zone(db.Model):
                       db.UniqueConstraint('abbr', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     abbr = db.Column(db.String(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -74,7 +74,7 @@ class status(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     tenant_uuid = db.Column(db.String(), nullable=False)
     createdBy = db.Column(db.String(), nullable=False)
@@ -87,7 +87,7 @@ class treatmentType(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -101,7 +101,7 @@ class riskResponse(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -115,7 +115,7 @@ class eventType(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -129,7 +129,7 @@ class severity(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     value = db.Column(db.Integer(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
@@ -144,7 +144,7 @@ class likelihood(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     value = db.Column(db.Integer(), nullable=False)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
@@ -159,7 +159,7 @@ class causingFactor(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -173,7 +173,7 @@ class processArea(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -187,7 +187,7 @@ class riskArea(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -201,7 +201,7 @@ class riskType(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
@@ -215,7 +215,7 @@ class valueChainArea(db.Model):
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
-    uuid = db.Column(db.String(), nullable=False)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
     title = db.Column(db.String(), nullable=False)
     desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
