@@ -93,7 +93,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{{{url_for('mdBP.processAreaView')}}}}">Cancel</a> &nbsp
+                    <a href="{{url_for('mdBP.processAreaView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

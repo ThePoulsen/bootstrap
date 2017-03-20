@@ -56,15 +56,15 @@ class eventTypeForm(FlaskForm):
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
-class SeverityForm(FlaskForm):
-    Value = IntegerField('Value',[InputRequired('Please enter a Severity Value')])
+class severityForm(FlaskForm):
+    value = IntegerField('Value',[InputRequired('Please enter a Severity Value')])
     title = StringField('Severity',[InputRequired('Please enter a Severity')])
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
 class likelihoodForm(FlaskForm):
-    Value = IntegerField('Value',[InputRequired('Please enter a Likelihood Value')])
+    value = IntegerField('Value',[InputRequired('Please enter a Likelihood Value')])
     title = StringField('Likelihood',[InputRequired('Please enter a Likelihood')])
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
