@@ -53,3 +53,7 @@ table.dataTable thead .sorting_desc:after {
 .radio label{
     padding-left:10px;
 }
+
+.panel {
+    overflow: auto;
+}

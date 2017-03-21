@@ -17,8 +17,8 @@ class user(db.Model):
     email = db.Column(db.String(), nullable=False)
     phone = db.Column(db.String(), nullable=False)
     role = db.Column(db.String(), nullable=False)
-    active = db.Column(db.String())
-    locked = db.Column(db.String())
+    active = db.Column(db.Boolean())
+    locked = db.Column(db.Boolean())
     contact = db.Column(db.Boolean())
     confirmed = db.Column(db.Boolean())
 

@@ -3,6 +3,7 @@
 from flask import render_template, Blueprint, flash, request, session, redirect, url_for
 from forms import loginForm, registerForm, setPasswordForm
 from authAPI import authAPI
+from app.crud import userCrud
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, sendMail
 import os
 
@@ -68,20 +69,36 @@ def registerView():
             errorMessage(req['error'])
 
         elif 'success' in req:
-            # send email confirmation
-            subject = u'Please confirm your account'
-            tok = req['token']
-            email = req['email']
-            confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
-            html = render_template('email/verify.html', confirm_url=confirm_url)
+            data = {'uuid':req['user_uuid'],
+                    'name':form.userName.data,
+                    'email':form.email.data,
+                    'phone':'',
+                    'role':'Administrator',
+                    'contact':True,
+                    'initials':'',
+                    'tenant_uuid':req['tenant_uuid'],
+                    'groups':[]}
 
-            sendMail(subject=subject,
-                     sender=os.environ['mailSender'],
-                     recipients=[email],
-                     html_body=html,
-                     text_body = None)
-            successMessage('You have successfully registered your account, please check your email for confirmation.')
-            return redirect(url_for('indexBP.indexView'))
+            usr = userCrud.postUser(data=data)
+
+            if 'error' in usr:
+                errorMessage(usr['error'])
+
+            else:
+                # send email confirmation
+                subject = u'Please confirm your account'
+                tok = req['token']
+                email = req['email']
+                confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
+                html = render_template('email/verify.html', confirm_url=confirm_url)
+
+                sendMail(subject=subject,
+                         sender=os.environ['mailSender'],
+                         recipients=[email],
+                         html_body=html,
+                         text_body = None)
+                successMessage('You have successfully registered your account, please check your email for confirmation.')
+                return redirect(url_for('indexBP.indexView'))
 
     return render_template('auth/register.html', form=form)
 
@@ -116,6 +133,7 @@ def confirmEmailView(token):
                 errorMessage(req['error'])
 
         elif 'success' in req:
+            userCrud.confirmUser(req['user_uuid'])
             successMessage('Your profile has been confirmed, please login')
             return redirect(url_for('authBP.loginView'))
 

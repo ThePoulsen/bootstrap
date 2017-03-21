@@ -2,7 +2,7 @@
 
 from flask import render_template, Blueprint, flash, request, session, redirect, url_for, jsonify
 from authAPI import authAPI
-from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, sendMail
+from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, sendMail, getUser, getRole
 from forms import userForm, groupForm
 from app.crud import userCrud, groupCrud
 import os
@@ -28,16 +28,14 @@ def profileView():
 def userView(function=None, uuid=None):
     # Universal vars
     viewName = 'User'
-    viewURL = 'mdBP.userView'
-    listColumns = ['User name','Email','Roles','Groups', 'Locked?', 'Contact?', 'Active?', 'Confirmed?']
+    viewURL = 'userBP.userView'
+    listColumns = ['Initials','User name','Email','Roles','Groups', 'Locked?', 'Contact?', 'Active?', 'Confirmed?']
     templateView = 'user/user.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
-              'maxDataTableWidth': '1200',
-              'minDataTableWidth': '800',
               'details': False,
-              'deleteButton': False}
+              'withoutDeleteButton': True}
 
     # Cruds
     listCrud = userCrud.userListData
@@ -45,29 +43,32 @@ def userView(function=None, uuid=None):
     postCrud = userCrud.postUser
     putCrud = userCrud.putUser
 
-    postForm = userForm()
+    postForm = userForm(role='User', locked='Locked', active='Active')
     postData = {'initials':postForm.initials.data,
                 'name':postForm.name.data,
                 'email':postForm.email.data,
                 'phone':postForm.phone.data,
                 'role':postForm.role.data,
-                'active':postForm.active.data,
-                'locked':postForm.locked.data}
+                'groups':postForm.groups.data}
 
     putForm = userForm()
     putData = {'initials':putForm.initials.data,
-                'name':putForm.name.data,
-                'email':putForm.email.data,
-                'phone':putForm.phone.data,
-                'role':putForm.role.data,
-                'active':putForm.active.data,
-                'locked':putForm.locked.data}
+               'name':putForm.name.data,
+               'email':putForm.email.data,
+               'phone':putForm.phone.data,
+               'groups':putForm.groups.data}
 
     # put variables
-    putExecs = []
+    putExecs = ['data = userCrud.getUser(uuid)',
+                'role = getRole(data.role)',
+                'groups = [r.uuid for r in data.groups]',
+                'putForm = userForm(name=data.name,initials=data.initials,email=data.email,phone=data.phone,role=data.role,groups=groups, locked="Locked", active="Active")',
+                'groups = groupCrud.groupSelectData()',
+                'postForm.groups.choices = groups']
 
     # Post variables
-    postExecs = []
+    postExecs = ['groups = groupCrud.groupSelectData()',
+                 'postForm.groups.choices = groups']
 
     # --------------------------------------------------------------------------------------------
     # CRUD Views (Do not touch!)
@@ -87,7 +88,7 @@ def userView(function=None, uuid=None):
             exec(r)
 
         if postForm.validate_on_submit():
-            req = postCrud(data = postData)
+            req = postCrud(data=postData)
             if 'success' in req:
                 successMessage(req['success'])
                 if not postForm.submitStay.data:
@@ -120,7 +121,22 @@ def userView(function=None, uuid=None):
         for r in putExecs:
             exec(r)
 
+        if not 'Administrator' in session['roles']:
+            if data.role == 'Administrator':
+                errorMessage('You must have Administrator rights in order to edit another admin')
+                return redirect(url_for('userBP.userView'))
+
         if putForm.validate_on_submit():
+            if putForm.role.data != data.role:
+                if data.contact == True:
+                    errorMessage('You cannot change contact person roles')
+                    return render_template(templateView, form=putForm, **kwargs)
+                else:
+                    putData['role'] = putForm.role.data
+            else:
+                putData['role'] = putForm.role.data
+
+
             req = putCrud(data=putData, uuid=uuid)
             if 'success' in req:
                 successMessage(req['success'])
