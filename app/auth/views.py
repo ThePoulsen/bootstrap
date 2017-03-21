@@ -44,7 +44,7 @@ def loginView():
                     errorMessage(req['error']+' - Attempts left: '+req['attempts left'])
 
                 else:
-                    errorMessage('Unspecified error')
+                    errorMessage(req['error'])
 
 
         return render_template('auth/login.html', form=form)

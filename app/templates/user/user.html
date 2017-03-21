@@ -135,6 +135,13 @@
                     {% endfor %}
                 </div>
 
+                {% if noLocked == False %}
+                {{ form.locked.label }}
+                <div class="radio">
+                    {{ form.locked() }}
+                </div>
+                {% endif %}
+
                 {{ form.role.label }}
                 <div class="radio">
                     {{ form.role()}}

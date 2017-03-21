@@ -48,10 +48,10 @@ $(document).ready(function() {
 {% block pageContent %}
 <div class="panel panel-default" style="max-width:{{maxDataTableWidth}}px;min-width:{{minDataTableWidth}}px">
     <div class="panel-heading row" style="margin-right:0px;margin-left:0px;">
-        <div class="col col-xs-6 col-sm-6 col-md-7">
+        <div class="col col-xs-6 col-sm-6 col-md-9">
             <h3 class="panel-title">{{title}}</h3>
         </div>
-        <div class="col col-xs-6 col-sm-6 col-md-5">
+        <div class="col col-xs-6 col-sm-6 col-md-3">
             <div class="input-group input-group-sm">
                 <span class="input-group-addon" id="sizing-addon3">Search</span>
                 <input type="text" class="form-control" id="myInputTextField" aria-describedby="sizing-addon3">
@@ -72,6 +72,14 @@ $(document).ready(function() {
                 {% endif %}
 
                 {% if not withoutEditButton %}
+                    <th class="tableButtons"></th>
+                {% endif %}
+
+                {% if activateButton %}
+                    <th class="tableButtons"></th>
+                {% endif %}
+
+                {% if lockButton %}
                     <th class="tableButtons"></th>
                 {% endif %}
 
@@ -109,7 +117,7 @@ $(document).ready(function() {
 
                     {% if not withoutDetailsButton %}
                         <td class="tableButtons">
-                            <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
+                            <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="Update">
                             </form>
                             <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
@@ -120,14 +128,57 @@ $(document).ready(function() {
 
                     {% if not withoutEditButton %}
                         <td class="tableButtons">
-                            <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
+                            <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="Edit">
                             </form>
                             <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
                                 <i class="fa fa-pencil" data-toggle="tooltip" title="Edit row"></i>
                             </a>
                         </td>
+                    {% endif %}
+                    {{row[lockIndex]}}
+                    {% if lockButton %}
+                        {% if 'minus' in row[lockIndex] %}
+                        <td class="tableButtons">
+                            <form name="lockRow{{row[0]}}" action="{{ request.path }}/lock/{{row[0]}}" class="lockRow" method="post">
+                                <input type='hidden' class="updateButton" type="submit" value="lock">
+                            </form>
+                            <a href="#" onclick="document.forms['lockRow{{row[0]}}'].submit(); return false;">
+                                <i class="fa fa-unlock" data-toggle="tooltip" title="Lock row"></i>
+                            </a>
+                        </td>
+                        {% else %}
+                        <td class="tableButtons">
+                            <form name="unlockRow{{row[0]}}" action="{{ request.path }}/unlock/{{row[0]}}" class="unlockRow" method="post">
+                                <input type='hidden' class="updateButton" type="submit" value="unlock">
+                            </form>
+                            <a href="#" onclick="document.forms['unlockRow{{row[0]}}'].submit(); return false;">
+                                <i class="fa fa-lock" data-toggle="tooltip" title="Unlock row"></i>
+                            </a>
+                        </td>
+                        {% endif %}
+                    {% endif %}
 
+                    {% if activateButton %}
+                        {% if 'check' in row[activeIndex] %}
+                            <td class="tableButtons">
+                                <form name="deactivateRow{{row[0]}}" action="{{ request.path }}/deactivate/{{row[0]}}" class="deactivateRow" method="post">
+                                    <input type='hidden' class="updateButton" type="submit" value="deactivate">
+                                </form>
+                                <a href="#" onclick="document.forms['deactivateRow{{row[0]}}'].submit(); return false;">
+                                    <i class="fa fa-times-circle-o" data-toggle="tooltip" title="Deactivate row"></i>
+                                </a>
+                            </td>
+                        {% else %}
+                            <td class="tableButtons">
+                                <form name="activateRow{{row[0]}}" action="{{ request.path }}/activate/{{row[0]}}" class="activateRow" method="post">
+                                    <input type='hidden' class="updateButton" type="submit" value="activate">
+                                </form>
+                                <a href="#" onclick="document.forms['activateRow{{row[0]}}'].submit(); return false;">
+                                    <i class="fa fa-bolt" data-toggle="tooltip" title="Activate row"></i>
+                                </a>
+                            </td>
+                        {% endif %}
                     {% endif %}
 
                     {% if not withoutDeleteButton %}

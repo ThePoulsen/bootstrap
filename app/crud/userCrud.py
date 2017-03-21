@@ -51,17 +51,20 @@ def postUser(data):
 
             # send email confirmation
             if os.environ['sendMail'] == 'True':
-                subject = u'Please confirm your account'
-                tok = req['token']
-                email = form.email.data
-                confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
-                html = render_template('email/verify.html', confirm_url=confirm_url)
+                try:
+                    subject = u'Please confirm your account'
+                    tok = req['token']
+                    email = data['email']
+                    confirm_url = url_for('authBP.confirmEmailView',token=tok, _external=True)
+                    html = render_template('email/verify.html', confirm_url=confirm_url)
 
-                sendMail(subject=subject,
-                         sender=os.environ['mailSender'],
-                         recipients=[email],
-                         html_body=html,
-                         text_body = None)
+                    sendMail(subject=subject,
+                             sender=os.environ['mailSender'],
+                             recipients=[email],
+                             html_body=html,
+                             text_body = None)
+                except:
+                    pass
             try:
                 db.session.add(usr)
                 db.session.commit()
@@ -109,24 +112,70 @@ def putUser(data, uuid):
             return {'error': unicode(E)}
 
 def deactivateUser(uuid):
-    usr = getUser(uuid)
-    usr.active = False
-    db.session.commit()
+    try:
+        usr = getUser(uuid)
+        usr.active = False
+        db.session.commit()
+        return {'success': 'User has been deactivated'}
+    except Exception as E:
+        return {'error':unicode(E)}
 
 def activateUser(uuid):
-    usr = getUser(uuid)
-    usr.active = True
-    db.session.commit()
+    try:
+        usr = getUser(uuid)
+        usr.active = True
+        db.session.commit()
+        return {'success': 'User has been activated'}
+    except Exception as E:
+        return {'error':unicode(E)}
+
+def deleteUser(uuid):
+    try:
+        usr = getUser(uuid)
+        req = authAPI(endpoint='user/'+unicode(uuid), method='delete', token=session['token'])
+        if 'success' in req:
+            try:
+                db.session.delete(usr)
+                db.session.commit()
+                return {'success': 'User has been activated'}
+            except Exception as E:
+                return {'error':unicode(E)}
+        else:
+            return {'error':req['error']}
+    except Exception as E:
+        return {'error':unicode(E)}
 
 def lockUser(uuid):
-    usr = getUser(uuid)
-    usr.locked = True
-    db.session.commit()
+    try:
+        usr = getUser(uuid)
+        req = authAPI(endpoint='lockUser/'+unicode(uuid), method='put', token=session['token'])
+        if 'success' in req:
+            try:
+                usr.locked = True
+                db.session.commit()
+                return {'success': 'User has been locked out of the system'}
+            except Exception as E:
+                return {'error':unicode(E)}
+        else:
+            return {'error': req['error']}
+    except Exception as E:
+        return {'error':unicode(E)}
 
 def unlockUser(uuid):
-    usr = getUser(uuid)
-    usr.locked = False
-    db.session.commit()
+    try:
+        usr = getUser(uuid)
+        req = authAPI(endpoint='unlockUser/'+unicode(uuid), method='put', token=session['token'])
+        if 'success' in req:
+            try:
+                usr.locked = False
+                db.session.commit()
+                return {'success': 'User can now use the system again'}
+            except Exception as E:
+                return {'error':unicode(E)}
+        else:
+            return {'error': req['error']}
+    except Exception as E:
+        return {'error':unicode(E)}
 
 def setContactUser(uuid):
     usr = getUser(uuid)
@@ -149,7 +198,7 @@ def userListData():
     data = getUsers()
     output = []
     for r in data:
-        if r.locked == True:
+        if r.locked == 'true':
             locked = '<i class="fa fa-check" aria-hidden="true"></i>'
         else:
             locked = '<i class="fa fa-minus" aria-hidden="true"></i>'
