@@ -3,7 +3,7 @@
 {% block title %}User profile{% endblock %}
 
 {% block breadCrumb %}
-    <li><a href="{{url_for('mdBP.causingFactorView')}}">Causing Factors</a></li>
+    <li><a href="{{url_for('causingFactorBP.causingFactorView')}}">Causing Factors</a></li>
 {% endblock %}
 
 {% block pageContent %}
@@ -29,6 +29,10 @@
                     <tr>
                         <td>Description</td>
                         <td>{{detailsData['desc']}}</td>
+                    </tr>
+                    <tr>
+                        <td>Causing Factor Type</td>
+                        <td>{{detailsData['causingFactorType'].title}}</td>
                     </tr>
                     <tr>
                         <td>Created By</td>
@@ -68,7 +72,7 @@
             </table>
 
             {% else %}
-            <form method="post" name="causingFactorForm" id="causingFactorForm">
+            <form method="post" name="causingFactorTypeForm" id="causingFactorTypeForm">
                 <div class="form-group">
                     {{ form.title.label }}
                     {{ form.title(class_='form-control ')}}
@@ -85,6 +89,14 @@
                     {% endfor %}
                 </div>
 
+                <div class="form-group">
+                    {{ form.causingFactorType.label }}
+                    {{ form.causingFactorType(class_='form-control')}}
+                    {% for error in form.causingFactorType.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
                 {% if submitStay == False %}
                 {% else %}
                 <div style="float:left;">
@@ -93,7 +105,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{url_for('mdBP.causingFactorView')}}">Cancel</a> &nbsp
+                    <a href="{{url_for('causingFactorBP.causingFactorView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

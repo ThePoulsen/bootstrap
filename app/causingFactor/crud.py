@@ -1,8 +1,9 @@
 from app import db
 from flask import session
-from app.masterData.models import causingFactor
+from app.causingFactor.models import causingFactor
 import uuid as UUID
 from datetime import datetime
+from app.crud import causingFactorTypeCrud
 
 def getCausingFactors():
     return causingFactor.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
@@ -11,10 +12,18 @@ def getCausingFactor(uuid):
     return causingFactor.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
 
 def postCausingFactor(data):
+    r = causingFactorTypeCrud.getCausingFactorType(data['causingFactorType'])
+    if r == None:
+        causingFactorType_id = None
+    else:
+        causingFactorType_id = r.id
+
     row = causingFactor(title = data['title'],
                         desc = data['desc'],
                         tenant_uuid = session['tenant_uuid'],
                         uuid = UUID.uuid4(),
+                        causingFactorType_id=causingFactorType_id,
+                        causingFactorType=r,
                         created=datetime.now(),
                         createdBy=session['user_uuid'])
 
@@ -29,12 +38,20 @@ def postCausingFactor(data):
             return {'error': unicode(E)}
 
 def putCausingFactor(data, uuid):
+    r = causingFactorTypeCrud.getCausingFactorType(data['causingFactorType'])
+    if r == None:
+        causingFactorType_id = None
+    else:
+        causingFactorType_id = r.id
+
     row = getCausingFactor(uuid)
 
     row.title = data['title']
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
+    row.causingFactorType_id = causingFactorType_id
+    row.causingFactorType = r
 
     try:
         db.session.commit()
@@ -65,6 +82,6 @@ def causingFactorListData():
     entries = getCausingFactors()
     data = []
     for r in entries:
-        temp = [r.uuid, r.title, r.desc]
+        temp = [r.uuid, r.title, r.desc, r.causingFactorType.title]
         data.append(temp)
     return data

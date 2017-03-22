@@ -154,8 +154,8 @@ class likelihood(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-class causingFactor(db.Model):
-    __tablename__ = 'causingFactor'
+class causingFactorType(db.Model):
+    __tablename__ = 'causingFactorType'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)

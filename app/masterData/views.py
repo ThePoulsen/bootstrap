@@ -2,8 +2,8 @@
 
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
-from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, severityCrud, likelihoodCrud, causingFactorCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud, deliveryPointCrud, valueChainStepTypeCrud
-from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, severityForm, likelihoodForm, causingFactorForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm, deliveryPointForm, valueChainStepTypeForm
+from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, severityCrud, likelihoodCrud, causingFactorTypeCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud, deliveryPointCrud, valueChainStepTypeCrud
+from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, severityForm, likelihoodForm, causingFactorTypeForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm, deliveryPointForm, valueChainStepTypeForm
 
 mdBP = Blueprint('mdBP', __name__)
 
@@ -1136,17 +1136,17 @@ def likelihoodView(function=None, uuid=None):
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
 
-@mdBP.route('/causingFactor', methods=['GET','POST'])
-@mdBP.route('/causingFactor/<string:function>', methods=['GET','POST'])
-@mdBP.route('/causingFactor/<string:function>/<string:uuid>', methods=['GET','POST'])
+@mdBP.route('/causingFactorType', methods=['GET','POST'])
+@mdBP.route('/causingFactorType/<string:function>', methods=['GET','POST'])
+@mdBP.route('/causingFactorType/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator'])
-def causingFactorView(function=None, uuid=None):
+def causingFactorTypeView(function=None, uuid=None):
     # Universal vars
-    viewName = 'Causing Factor'
-    viewURL = 'mdBP.causingFactorView'
-    listColumns = ['Causing Factor','Description']
-    templateView = 'masterData/causingFactor.html'
+    viewName = 'Causing Factor Type'
+    viewURL = 'mdBP.causingFactorTypeView'
+    listColumns = ['Causing Factor Type','Description']
+    templateView = 'masterData/causingFactorType.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
@@ -1155,23 +1155,23 @@ def causingFactorView(function=None, uuid=None):
               'details': False}
 
     # Cruds
-    listCrud = causingFactorCrud.causingFactorListData
-    getCrud = causingFactorCrud.getCausingFactor
-    postCrud = causingFactorCrud.postCausingFactor
-    putCrud = causingFactorCrud.putCausingFactor
-    deleteCrud = causingFactorCrud.deleteCausingFactor
+    listCrud = causingFactorTypeCrud.causingFactorTypeListData
+    getCrud = causingFactorTypeCrud.getCausingFactorType
+    postCrud = causingFactorTypeCrud.postCausingFactorType
+    putCrud = causingFactorTypeCrud.putCausingFactorType
+    deleteCrud = causingFactorTypeCrud.deleteCausingFactorType
 
-    postForm = causingFactorForm()
+    postForm = causingFactorTypeForm()
     postData = {'title':postForm.title.data,
                 'desc':postForm.desc.data}
 
-    putForm = causingFactorForm()
+    putForm = causingFactorTypeForm()
     putData = {'title':putForm.title.data,
                 'desc':putForm.desc.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'putForm = causingFactorForm(title=data.title, desc=data.desc)']
+                'putForm = causingFactorTypeForm(title=data.title, desc=data.desc)']
 
     # Post variables
     postExecs = []

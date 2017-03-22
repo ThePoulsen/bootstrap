@@ -1,6 +1,7 @@
 {% set parentNav = [
     (['Superuser','Administrator'], 'fa-cog', 'fa-chevron-down', 'Settings'),
     (['Administrator'], 'fa-cog', 'fa-chevron-down', 'Masterdata'),
+    (['Administrator', 'Superuser'], 'fa-cog', 'fa-chevron-down', 'Supporting Data'),
 ] -%}
 
 {% set childNav = [
@@ -17,13 +18,15 @@
     (['Administrator'], 'mdBP.eventTypeView', 'Event Types', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.severityView', 'Severities', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.likelihoodView', 'Likelihoods', 'Masterdata', 'fa-'),
-    (['Administrator'], 'mdBP.causingFactorView', 'Causing Factors', 'Masterdata', 'fa-'),
+    (['Administrator'], 'mdBP.causingFactorTypeView', 'Causing Factor Types', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.processAreaView', 'Process Areas', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.riskAreaView', 'Risk Areas', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.riskTypeView', 'Risk Types', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.valueChainAreaView', 'Value Chain Areas', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.valueChainStepTypeView', 'Value Chain Step Types', 'Masterdata', 'fa-'),
     (['Administrator'], 'mdBP.deliveryPointView', 'Delivery Points', 'Masterdata', 'fa-'),
+
+    (['Superuser','Administrator'], 'causingFactorBP.causingFactorView', 'Causing Factors', 'Supporting Data', 'fa-'),
 
 ] -%}
 

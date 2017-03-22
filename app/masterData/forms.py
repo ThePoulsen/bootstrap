@@ -70,8 +70,8 @@ class likelihoodForm(FlaskForm):
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
-class causingFactorForm(FlaskForm):
-    title = StringField('Causing Factor',[InputRequired('Please enter a Causing Factor')])
+class causingFactorTypeForm(FlaskForm):
+    title = StringField('Causing Factor Type',[InputRequired('Please select a Causing Factor Type')])
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
