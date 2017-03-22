@@ -223,3 +223,31 @@ class valueChainArea(db.Model):
     created = db.Column(db.DateTime(), nullable=False)
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
+
+class valueChainStepType(db.Model):
+    __tablename__ = 'valueChainStepType'
+    __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
+    title = db.Column(db.String(), nullable=False)
+    desc = db.Column(db.String())
+    tenant_uuid = db.Column(db.String(), nullable=False)
+    createdBy = db.Column(db.String(), nullable=False)
+    created = db.Column(db.DateTime(), nullable=False)
+    modifiedBy = db.Column(db.String())
+    modified = db.Column(db.DateTime())
+
+class deliveryPoint(db.Model):
+    __tablename__ = 'deliveryPoint'
+    __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
+
+    id = db.Column(db.Integer, primary_key=True)
+    uuid = db.Column(db.String(), nullable=False, unique=True)
+    title = db.Column(db.String(), nullable=False)
+    desc = db.Column(db.String())
+    tenant_uuid = db.Column(db.String(), nullable=False)
+    createdBy = db.Column(db.String(), nullable=False)
+    created = db.Column(db.DateTime(), nullable=False)
+    modifiedBy = db.Column(db.String())
+    modified = db.Column(db.DateTime())

@@ -29,15 +29,18 @@ Bootstrap(app)
 # Import models
 from app.masterData.models import *
 from app.user.models import *
+from app.valueChain.models import *
 
 ## import blueprints
 from .indexView import indexBP
 from app.auth.views import authBP
 from app.user.views import userBP
 from app.masterData.views import mdBP
+from app.valueChain.views import valueChainBP
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
 app.register_blueprint(authBP, url_prefix='')
 app.register_blueprint(userBP, url_prefix='')
 app.register_blueprint(mdBP, url_prefix='/masterData')
+app.register_blueprint(valueChainBP, url_prefix='/valueChain')

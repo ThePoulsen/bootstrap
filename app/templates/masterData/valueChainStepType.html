@@ -3,7 +3,7 @@
 {% block title %}User profile{% endblock %}
 
 {% block breadCrumb %}
-    <li><a href="{{url_for('userBP.groupView')}}">User / Email Groups</a></li>
+    <li><a href="{{url_for('mdBP.valueChainStepTypeView')}}">Value Chain Step Type</a></li>
 {% endblock %}
 
 {% block pageContent %}
@@ -23,24 +23,12 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Group Title</td>
+                        <td>Title</td>
                         <td>{{detailsData['title']}}</td>
                     </tr>
                     <tr>
                         <td>Description</td>
                         <td>{{detailsData['desc']}}</td>
-                    </tr>
-                    <tr>
-                        <td>Users</td>
-                        <td>
-                            <table>
-                                {% for u in detailsData['users']%}
-                                <tr><td>
-                                {{u.name}} - {{u.email}}
-                                </td></tr>
-                                {% endfor %}
-                            </table>
-                        </td>
                     </tr>
                     <tr>
                         <td>Created By</td>
@@ -80,7 +68,7 @@
             </table>
 
             {% else %}
-            <form method="post" name="groupForm" id="groupForm">
+            <form method="post" name="valueChainStepTypeForm" id="valueChainStepTypeForm">
                 <div class="form-group">
                     {{ form.title.label }}
                     {{ form.title(class_='form-control ')}}
@@ -97,13 +85,6 @@
                     {% endfor %}
                 </div>
 
-                <div class="form-group">
-                    {{ form.users.label }}
-                    {{ form.users(class_='form-control')}}
-                    {% for error in form.users.errors %}
-                        <p>{{error}}</p>
-                    {% endfor %}
-                </div>
                 {% if submitStay == False %}
                 {% else %}
                 <div style="float:left;">
@@ -112,7 +93,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{url_for('userBP.groupView')}}">Cancel</a> &nbsp
+                    <a href="{{url_for('mdBP.valueChainStepTypeView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

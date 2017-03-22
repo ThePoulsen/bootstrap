@@ -26,6 +26,14 @@ $(document).ready(function() {
                                  { "orderable": false },
                             {% endif %}
 
+                            {% if activateButton %}
+                                 { "orderable": false },
+                            {% endif %}
+
+                            {% if lockButton %}
+                                 { "orderable": false },
+                            {% endif %}
+
                             {% if not withoutDeleteButton %}
                                  { "orderable": false },
                             {% endif %}
@@ -117,7 +125,7 @@ $(document).ready(function() {
 
                     {% if not withoutDetailsButton %}
                         <td class="tableButtons">
-                            <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="post">
+                            <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
                                 <input type='hidden' class="updateButton" type="submit" value="Update">
                             </form>
                             <a href="#" onclick="document.forms['rowDetails{{row[0]}}'].submit(); return false;">
@@ -128,7 +136,7 @@ $(document).ready(function() {
 
                     {% if not withoutEditButton %}
                         <td class="tableButtons">
-                            <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="post">
+                            <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
                                 <input type='hidden' class="updateButton" type="submit" value="Edit">
                             </form>
                             <a href="#" onclick="document.forms['editRow{{row[0]}}'].submit(); return false;">
@@ -136,9 +144,9 @@ $(document).ready(function() {
                             </a>
                         </td>
                     {% endif %}
-                    {{row[lockIndex]}}
+
                     {% if lockButton %}
-                        {% if 'minus' in row[lockIndex] %}
+                        {% if 'unlock' in row[lockIndex] %}
                         <td class="tableButtons">
                             <form name="lockRow{{row[0]}}" action="{{ request.path }}/lock/{{row[0]}}" class="lockRow" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="lock">

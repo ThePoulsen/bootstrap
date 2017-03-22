@@ -18,7 +18,7 @@ class userForm(FlaskForm):
     submitStay = SubmitField(label='Save and add new')
 
 class groupForm(FlaskForm):
-    name = StringField('Group Title', validators=[InputRequired('Please enter a group title')])
+    title = StringField('Group Title', validators=[InputRequired('Please enter a group title')])
     desc = TextAreaField('Description')
     users = SelectMultipleField('Users', validators=[], choices=[], widget=select2MultipleWidget())
     submit = SubmitField(label='Save')

@@ -126,16 +126,24 @@ def confirmEmailView(token):
     else:
         req = authAPI('confirm', method='post', token=token)
         if 'error' in req:
-            if req['error'] == 'User must set password':
-                successMessage('Your profile has been confirmed, please set your new password')
-                return redirect(url_for('authBP.setPasswordView', tok=req['token']))
+            usrConf = userCrud.confirmUser(uuid=req['user_uuid'], tenant_uuid=req['tenant_uuid'])
+            if 'success' in usrConf:
+                if req['error'] == 'User must set password':
+                    successMessage('Your profile has been confirmed, please set your new password')
+                    return redirect(url_for('authBP.setPasswordView', tok=req['token']))
+                else:
+                    errorMessage(req['error'])
             else:
                 errorMessage(req['error'])
 
         elif 'success' in req:
-            userCrud.confirmUser(req['user_uuid'])
-            successMessage('Your profile has been confirmed, please login')
-            return redirect(url_for('authBP.loginView'))
+            usrConf = userCrud.confirmUser(uuid=req['user_uuid'], tenant_uuid=req['tenant_uuid'])
+            if 'success' in usrConf:
+                successMessage('Your profile has been confirmed, please login')
+                return redirect(url_for('authBP.loginView'))
+            else:
+                errorMessage(userConf['error'])
+                return redirect(url_for('indexBP.indexView'))
 
     return redirect(url_for('indexBP.indexView'))
 

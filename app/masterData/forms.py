@@ -99,3 +99,15 @@ class valueChainAreaForm(FlaskForm):
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
+
+class valueChainStepTypeForm(FlaskForm):
+    title = StringField('Value Chain Step Type',[InputRequired('Please enter a Value Chain Step Type')])
+    desc = TextAreaField('Description')
+    submit = SubmitField(label='Save')
+    submitStay = SubmitField(label='Save and add new')
+
+class deliveryPointForm(FlaskForm):
+    title = StringField('Delivery Point',[InputRequired('Please enter a Delivery Point')])
+    desc = TextAreaField('Description')
+    submit = SubmitField(label='Save')
+    submitStay = SubmitField(label='Save and add new')

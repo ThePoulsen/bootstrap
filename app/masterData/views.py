@@ -2,8 +2,8 @@
 
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
-from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, severityCrud, likelihoodCrud, causingFactorCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud
-from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, severityForm, likelihoodForm, causingFactorForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm
+from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, severityCrud, likelihoodCrud, causingFactorCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud, deliveryPointCrud, valueChainStepTypeCrud
+from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, severityForm, likelihoodForm, causingFactorForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm, deliveryPointForm, valueChainStepTypeForm
 
 mdBP = Blueprint('mdBP', __name__)
 
@@ -1612,6 +1612,226 @@ def valueChainAreaView(function=None, uuid=None):
     # put variables
     putExecs = ['data = getCrud(uuid)',
                 'putForm = valueChainAreaForm(title=data.title, desc=data.desc)']
+
+    # Post variables
+    postExecs = []
+
+    # --------------------------------------------------------------------------------------------
+    # CRUD Views (Do not touch!)
+    # Build list of all rows
+    if function == None:
+        kwargs['listColumns'] = listColumns
+        kwargs['listData'] = listCrud()
+        return render_template('dataTable.html', **kwargs)
+
+    # Create new row
+    elif function == 'new':
+        # Function kwargs
+        kwargs = {'contentTitle': 'Add new {}'.format(viewName),
+                  'submitStay': True}
+
+        for r in postExecs:
+            exec(r)
+
+        if postForm.validate_on_submit():
+            req = postCrud(data = postData)
+            if 'success' in req:
+                successMessage(req['success'])
+                if not postForm.submitStay.data:
+                    return redirect(url_for(viewURL))
+                else:
+                    return redirect(url_for(viewURL)+'/new')
+            elif 'error' in req:
+                errorMessage(req['error'])
+        return render_template(templateView, form=postForm, **kwargs)
+
+    # View single row details
+    elif function == 'details' and uuid != None:
+        # Function kwargs
+        data = getCrud(uuid)
+        kwargs = {'contentTitle': '{} details'.format(viewName),
+                  'details': True,
+                  'detailsData':data,
+                  'submitStay': False,
+                  'modifiedUser':getUser(data.modifiedBy),
+                  'createdUser':getUser(data.createdBy)}
+
+        return render_template(templateView, **kwargs)
+
+    # Edit single row
+    elif function == 'edit' and uuid != None:
+        # Function kwargs
+        kwargs = {'contentTitle': 'Edit {}'.format(viewName),
+                  'submitStay': False}
+
+        for r in putExecs:
+            exec(r)
+
+        if putForm.validate_on_submit():
+            req = putCrud(data=putData, uuid=uuid)
+            if 'success' in req:
+                successMessage(req['success'])
+                return redirect(url_for(viewURL))
+            elif 'error' in req:
+                errorMessage(req['error'])
+
+        return render_template(templateView, form=putForm, **kwargs)
+
+    # Delete single row
+    elif function == 'delete' and uuid != None:
+        req = deleteCrud(uuid)
+        if 'success' in req:
+            successMessage(req['success'])
+        elif 'error' in req:
+            errorMessage(req['error'])
+        return redirect(url_for(viewURL))
+
+@mdBP.route('/valueChainStepType', methods=['GET','POST'])
+@mdBP.route('/valueChainStepType/<string:function>', methods=['GET','POST'])
+@mdBP.route('/valueChainStepType/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def valueChainStepTypeView(function=None, uuid=None):
+    # Universal vars
+    viewName = 'Value Chain Step Type'
+    viewURL = 'mdBP.valueChainStepTypeView'
+    listColumns = ['Value Chain Step Type','Description']
+    templateView = 'masterData/valueChainStepType.html'
+
+    # View kwargs
+    kwargs = {'title': viewName+' list',
+              'maxDataTableWidth': '700',
+              'minDataTableWidth': '500',
+              'details': False}
+
+    # Cruds
+    listCrud = valueChainStepTypeCrud.valueChainStepTypeListData
+    getCrud = valueChainStepTypeCrud.getValueChainStepType
+    postCrud = valueChainStepTypeCrud.postValueChainStepType
+    putCrud = valueChainAreaCrud.putValueChainArea
+    deleteCrud = valueChainStepTypeCrud.deleteValueChainStepType
+
+    postForm = valueChainStepTypeForm()
+    postData = {'title':postForm.title.data,
+                'desc':postForm.desc.data}
+
+    putForm = valueChainStepTypeForm()
+    putData = {'title':putForm.title.data,
+                'desc':putForm.desc.data}
+
+    # put variables
+    putExecs = ['data = getCrud(uuid)',
+                'putForm = valueChainStepTypeForm(title=data.title, desc=data.desc)']
+
+    # Post variables
+    postExecs = []
+
+    # --------------------------------------------------------------------------------------------
+    # CRUD Views (Do not touch!)
+    # Build list of all rows
+    if function == None:
+        kwargs['listColumns'] = listColumns
+        kwargs['listData'] = listCrud()
+        return render_template('dataTable.html', **kwargs)
+
+    # Create new row
+    elif function == 'new':
+        # Function kwargs
+        kwargs = {'contentTitle': 'Add new {}'.format(viewName),
+                  'submitStay': True}
+
+        for r in postExecs:
+            exec(r)
+
+        if postForm.validate_on_submit():
+            req = postCrud(data = postData)
+            if 'success' in req:
+                successMessage(req['success'])
+                if not postForm.submitStay.data:
+                    return redirect(url_for(viewURL))
+                else:
+                    return redirect(url_for(viewURL)+'/new')
+            elif 'error' in req:
+                errorMessage(req['error'])
+        return render_template(templateView, form=postForm, **kwargs)
+
+    # View single row details
+    elif function == 'details' and uuid != None:
+        # Function kwargs
+        data = getCrud(uuid)
+        kwargs = {'contentTitle': '{} details'.format(viewName),
+                  'details': True,
+                  'detailsData':data,
+                  'submitStay': False,
+                  'modifiedUser':getUser(data.modifiedBy),
+                  'createdUser':getUser(data.createdBy)}
+
+        return render_template(templateView, **kwargs)
+
+    # Edit single row
+    elif function == 'edit' and uuid != None:
+        # Function kwargs
+        kwargs = {'contentTitle': 'Edit {}'.format(viewName),
+                  'submitStay': False}
+
+        for r in putExecs:
+            exec(r)
+
+        if putForm.validate_on_submit():
+            req = putCrud(data=putData, uuid=uuid)
+            if 'success' in req:
+                successMessage(req['success'])
+                return redirect(url_for(viewURL))
+            elif 'error' in req:
+                errorMessage(req['error'])
+
+        return render_template(templateView, form=putForm, **kwargs)
+
+    # Delete single row
+    elif function == 'delete' and uuid != None:
+        req = deleteCrud(uuid)
+        if 'success' in req:
+            successMessage(req['success'])
+        elif 'error' in req:
+            errorMessage(req['error'])
+        return redirect(url_for(viewURL))
+
+@mdBP.route('/deliveryPoint', methods=['GET','POST'])
+@mdBP.route('/deliveryPoint/<string:function>', methods=['GET','POST'])
+@mdBP.route('/deliveryPoint/<string:function>/<string:uuid>', methods=['GET','POST'])
+@loginRequired
+@requiredRole(['Administrator'])
+def deliveryPointView(function=None, uuid=None):
+    # Universal vars
+    viewName = 'Delivery Point'
+    viewURL = 'mdBP.deliveryPointView'
+    listColumns = ['Delivery Point','Description']
+    templateView = 'masterData/deliveryPoint.html'
+
+    # View kwargs
+    kwargs = {'title': viewName+' list',
+              'maxDataTableWidth': '700',
+              'minDataTableWidth': '500',
+              'details': False}
+
+    # Cruds
+    listCrud = deliveryPointCrud.deliveryPointAreaListData
+    getCrud = deliveryPointCrud.getDeliveryPoint
+    postCrud = deliveryPointCrud.postDeliveryPoint
+    putCrud = deliveryPointCrud.putDeliveryPoint
+    deleteCrud = deliveryPointCrud.deleteDeliveryPoint
+
+    postForm = deliveryPointForm()
+    postData = {'title':postForm.title.data,
+                'desc':postForm.desc.data}
+
+    putForm = deliveryPointForm()
+    putData = {'title':putForm.title.data,
+                'desc':putForm.desc.data}
+
+    # put variables
+    putExecs = ['data = getCrud(uuid)',
+                'putForm =deliveryPointForm(title=data.title, desc=data.desc)']
 
     # Post variables
     postExecs = []

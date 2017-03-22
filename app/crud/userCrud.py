@@ -1,5 +1,5 @@
 from app import db
-from flask import session
+from flask import session, url_for, render_template
 from app.user.models import user, group
 from datetime import datetime
 from authAPI import authAPI
@@ -63,8 +63,8 @@ def postUser(data):
                              recipients=[email],
                              html_body=html,
                              text_body = None)
-                except:
-                    pass
+                except Exception as E:
+                    print E
             try:
                 db.session.add(usr)
                 db.session.commit()
@@ -75,14 +75,18 @@ def postUser(data):
                 else:
                     return {'error': unicode(E)}
 
-def confirmUser(uuid):
-    usr = getUser(uuid)
-    usr.confirmed = True
-    db.session.commit()
+def confirmUser(uuid, tenant_uuid):
+    try:
+        usr = user.query.filter_by(uuid=uuid, tenant_uuid=tenant_uuid).first()
+        usr.confirmed = True
+        db.session.commit()
+        return {'success':'User confirmed'}
+    except Exception as E:
+        return {'error':unicode(E)}
 
 def putUser(data, uuid):
     usr = getUser(uuid)
-
+    usr.groups = [group.query.filter_by(uuid=unicode(r)).first() for r in data['groups']]
     usr.initials = data['initials']
     usr.name = data['name']
     usr.email = data['email']
@@ -90,6 +94,7 @@ def putUser(data, uuid):
     usr.role = data['role']
     usr.modified = datetime.now()
     usr.modifiedBy = session['user_uuid']
+
 
     dataDict = {'name': data['name'],
                 'email': data['email'],
@@ -191,7 +196,7 @@ def userSelectData():
     data = getUsers()
     dataList = []
     for r in data:
-        dataList.append((r.uuid, r.title))
+        dataList.append((r.uuid, r.name))
     return dataList
 
 def userListData():
@@ -199,9 +204,9 @@ def userListData():
     output = []
     for r in data:
         if r.locked == 'true':
-            locked = '<i class="fa fa-check" aria-hidden="true"></i>'
+            locked = '<i class="fa fa-lock" aria-hidden="true"></i>'
         else:
-            locked = '<i class="fa fa-minus" aria-hidden="true"></i>'
+            locked = '<i class="fa fa-unlock" aria-hidden="true"></i>'
 
         if r.contact == True:
             contact = '<i class="fa fa-check" aria-hidden="true"></i>'
@@ -218,7 +223,8 @@ def userListData():
         else:
             confirmed = '<i class="fa fa-minus" aria-hidden="true"></i>'
 
+        groups = [g.title for g in r.groups]
 
-        temp = [r.uuid,r.initials, r.name, r.email, r.role, '', locked, contact, active, confirmed]
+        temp = [r.uuid,r.initials, r.name, r.email, r.role, groups, locked, contact, active, confirmed]
         output.append(temp)
     return output
