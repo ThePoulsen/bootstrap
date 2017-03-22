@@ -3,7 +3,7 @@
 {% block title %}User profile{% endblock %}
 
 {% block breadCrumb %}
-    <li><a href="{{url_for('causingFactorBP.causingFactorView')}}">Causing Factors</a></li>
+    <li><a href="{{url_for('treatmentBP.treatmentView')}}">Treatment</a></li>
 {% endblock %}
 
 {% block pageContent %}
@@ -31,8 +31,12 @@
                         <td>{{detailsData['desc']}}</td>
                     </tr>
                     <tr>
-                        <td>Causing Factor Type</td>
-                        <td>{{detailsData['causingFactorType'].title}}</td>
+                        <td>Treatment Type</td>
+                        <td>{{detailsData['treatmentType'].title}}</td>
+                    </tr>
+                    <tr>
+                        <td>Risk Response</td>
+                        <td>{{detailsData['riskResponse'].title}}</td>
                     </tr>
                     <tr>
                         <td>Created By</td>
@@ -72,7 +76,7 @@
             </table>
 
             {% else %}
-            <form method="post" name="causingFactorForm" id="causingFactorForm">
+            <form method="post" name="treatmentForm" id="treatmentForm">
                 <div class="form-group">
                     {{ form.title.label }}
                     {{ form.title(class_='form-control ')}}
@@ -90,9 +94,17 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.causingFactorType.label }}
-                    {{ form.causingFactorType(class_='form-control')}}
-                    {% for error in form.causingFactorType.errors %}
+                    {{ form.treatmentType.label }}
+                    {{ form.treatmentType(class_='form-control')}}
+                    {% for error in form.treatmentType.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.riskResponse.label }}
+                    {{ form.riskResponse(class_='form-control')}}
+                    {% for error in form.riskResponse.errors %}
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
@@ -105,7 +117,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{url_for('causingFactorBP.causingFactorView')}}">Cancel</a> &nbsp
+                    <a href="{{url_for('treatmentBP.treatmentView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

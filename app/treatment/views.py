@@ -3,22 +3,22 @@
 from flask import render_template, Blueprint, flash, request, session, redirect, url_for, jsonify
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
 import crud
-from app.crud import valueChainAreaCrud
-from forms import valueChainForm
+from app.crud import treatmentTypeCrud, riskResponseCrud
+from forms import treatmentForm
 
-valueChainBP = Blueprint('valueChainBP', __name__)
+treatmentBP = Blueprint('treatmentBP', __name__)
 
-@valueChainBP.route('/valueChain', methods=['GET','POST'])
-@valueChainBP.route('/valueChain/<string:function>', methods=['GET','POST'])
-@valueChainBP.route('/valueChain/<string:function>/<string:uuid>', methods=['GET','POST'])
+@treatmentBP.route('/treatment', methods=['GET','POST'])
+@treatmentBP.route('/treatment/<string:function>', methods=['GET','POST'])
+@treatmentBP.route('/treatment/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator','Superuser'])
-def valueChainView(function=None, uuid=None):
+def treatmentView(function=None, uuid=None):
     # Universal vars
-    viewName = 'Value Chain'
-    viewURL = 'valueChainBP.valueChainView'
-    listColumns = ['Value Chain', 'Description', 'Value Chain Area']
-    templateView = 'valueChain/valueChain.html'
+    viewName = 'Treatment'
+    viewURL = 'treatmentBP.treatmentView'
+    listColumns = ['Treatment', 'Description', 'Treatment Type', 'Risk Response']
+    templateView = 'treatment/treatment.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
@@ -27,34 +27,43 @@ def valueChainView(function=None, uuid=None):
               'details': False}
 
     # Cruds
-    listCrud = crud.valueChainListData
-    getCrud = crud.getValueChain
-    postCrud = crud.postValueChain
-    putCrud = crud.putValueChain
-    deleteCrud = crud.deleteValueChain
+    listCrud = crud.treatmentListData
+    getCrud = crud.getTreatment
+    postCrud = crud.postTreatment
+    putCrud = crud.putTreatment
+    deleteCrud = crud.deleteTreatment
 
-    postForm = valueChainForm()
+    postForm = treatmentForm()
     postData = {'title':postForm.title.data,
                 'desc':postForm.desc.data,
-                'valueChainArea':postForm.valueChainArea.data}
+                'treatmentType':postForm.treatmentType.data,
+                'riskResponse':postForm.riskResponse.data}
 
-    putForm = valueChainForm()
+    putForm = treatmentForm()
     putData = {'title':putForm.title.data,
                'desc':putForm.desc.data,
-               'valueChainArea':putForm.valueChainArea.data}
+               'treatmentType':putForm.treatmentType.data,
+               'riskResponse':putForm.riskResponse.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'valueChainArea=data.valueChainArea.uuid if data.valueChainArea else ""',
-                'putForm = valueChainForm(title=data.title,desc=data.desc,valueChainArea=valueChainArea)',
-                'valueChainAreas =  valueChainAreaCrud.valueChainAreaSelectData()',
-                'valueChainAreas.insert(0,("","Select Value Chain Area"))',
-                'putForm.valueChainArea.choices = valueChainAreas']
+                'treatmentType=data.treatmentType.uuid if data.treatmentType else ""',
+                'riskResponse=data.riskResponse.uuid if data.riskResponse else ""',
+                'putForm = treatmentForm(title=data.title, desc=data.desc, treatmentType=treatmentType, riskResponse=riskResponse)',
+                'treatmentTypes =  treatmentTypeCrud.treatmentTypeSelectData()',
+                'treatmentTypes.insert(0,("","Select treatmentType"))',
+                'putForm.treatmentType.choices = treatmentTypes',
+                'riskResponses = riskResponseCrud.riskResponseSelectData()',
+                'riskResponses.insert(0,("","Select Risk Response"))',
+                'putForm.riskResponse.choices = riskResponses']
 
     # Post variables
-    postExecs = ['valueChainAreas = valueChainAreaCrud.valueChainAreaSelectData()',
-                 'valueChainAreas.insert(0,("","Select Value Chain Area"))',
-                 'postForm.valueChainArea.choices = valueChainAreas',]
+    postExecs = ['treatmentTypes = treatmentTypeCrud.treatmentTypeSelectData()',
+                 'treatmentTypes.insert(0,("","Select Treatment Type"))',
+                 'postForm.treatmentType.choices = treatmentTypes',
+                 'riskResponses = riskResponseCrud.riskResponseSelectData()',
+                 'riskResponses.insert(0,("","Select Risk Response"))',
+                 'postForm.riskResponse.choices = riskResponses']
 
     # --------------------------------------------------------------------------------------------
     # CRUD Views (Do not touch!)

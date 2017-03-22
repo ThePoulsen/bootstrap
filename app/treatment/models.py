@@ -1,10 +1,10 @@
 ## -*- coding: utf-8 -*-
 
 from app import db
-from app.masterData.models import valueChainArea
+from app.masterData.models import treatmentType, riskResponse
 
-class valueChain(db.Model):
-    __tablename__ = 'valueChain'
+class treatment(db.Model):
+    __tablename__ = 'treatment'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
@@ -18,5 +18,8 @@ class valueChain(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    valueChainArea_id = db.Column(db.Integer, db.ForeignKey('valueChainArea.id'))
-    valueChainArea = db.relationship('valueChainArea', backref=db.backref('posts', lazy='dynamic'))
+    treatmentType_id = db.Column(db.Integer, db.ForeignKey('treatmentType.id'))
+    treatmentType = db.relationship('treatmentType', backref=db.backref('posts', lazy='dynamic'))
+
+    riskResponse_id = db.Column(db.Integer, db.ForeignKey('riskResponse.id'))
+    riskResponse = db.relationship('riskResponse', backref=db.backref('posts', lazy='dynamic'))

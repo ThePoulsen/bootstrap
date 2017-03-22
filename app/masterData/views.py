@@ -1815,7 +1815,7 @@ def deliveryPointView(function=None, uuid=None):
               'details': False}
 
     # Cruds
-    listCrud = deliveryPointCrud.deliveryPointAreaListData
+    listCrud = deliveryPointCrud.deliveryPointListData
     getCrud = deliveryPointCrud.getDeliveryPoint
     postCrud = deliveryPointCrud.postDeliveryPoint
     putCrud = deliveryPointCrud.putDeliveryPoint

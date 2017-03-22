@@ -1,11 +1,13 @@
+## -*- coding: utf-8 -*-
+
 from app import db
 from flask import session
 from app.masterData.models import deliveryPoint
 import uuid as UUID
 from datetime import datetime
 
-def getDeliveryPoint():
-    return DeliveryPoint.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
+def getDeliveryPoints():
+    return deliveryPoint.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
 
 def getDeliveryPoint(uuid):
     return deliveryPoint.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
