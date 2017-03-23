@@ -64,6 +64,7 @@ def putCausingFactor(data, uuid):
 
 def deleteCausingFactor(uuid):
     entry = getCausingFactor(uuid)
+
     try:
         db.session.delete(entry)
         db.session.commit()

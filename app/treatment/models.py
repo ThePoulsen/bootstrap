@@ -19,7 +19,4 @@ class treatment(db.Model):
     modified = db.Column(db.DateTime())
 
     treatmentType_id = db.Column(db.Integer, db.ForeignKey('treatmentType.id'))
-    treatmentType = db.relationship('treatmentType', backref=db.backref('posts', lazy='dynamic'))
-
     riskResponse_id = db.Column(db.Integer, db.ForeignKey('riskResponse.id'))
-    riskResponse = db.relationship('riskResponse', backref=db.backref('posts', lazy='dynamic'))

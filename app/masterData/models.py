@@ -96,6 +96,8 @@ class treatmentType(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
+    treatments = db.relationship('treatment', backref='treatmentType', lazy='dynamic')
+
 class riskResponse(db.Model):
     __tablename__ = 'riskResponse'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
@@ -109,6 +111,8 @@ class riskResponse(db.Model):
     created = db.Column(db.DateTime(), nullable=False)
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
+
+    treatments = db.relationship('treatment', backref='riskResponse', lazy='dynamic')
 
 class eventType(db.Model):
     __tablename__ = 'eventType'
@@ -168,6 +172,8 @@ class causingFactorType(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
+    causingFactors = db.relationship('causingFactor', backref='causingFactorType', lazy='dynamic')
+
 class processArea(db.Model):
     __tablename__ = 'processArea'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
@@ -223,6 +229,8 @@ class valueChainArea(db.Model):
     created = db.Column(db.DateTime(), nullable=False)
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
+
+    valueChains = db.relationship('valueChain', backref='valueChainType', lazy='dynamic')
 
 class valueChainStepType(db.Model):
     __tablename__ = 'valueChainStepType'

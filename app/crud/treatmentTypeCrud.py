@@ -47,6 +47,8 @@ def putTreatmentType(data, uuid):
 
 def deleteTreatmentType(uuid):
     entry = getTreatmentType(uuid)
+    if entry.treatments:
+        return {'error': 'Treatment Type cannot be deleted as long as there are Treatments assigned this Treatment Type'}
     try:
         db.session.delete(entry)
         db.session.commit()

@@ -19,4 +19,3 @@ class valueChain(db.Model):
     modified = db.Column(db.DateTime())
 
     valueChainArea_id = db.Column(db.Integer, db.ForeignKey('valueChainArea.id'))
-    valueChainArea = db.relationship('valueChainArea', backref=db.backref('posts', lazy='dynamic'))

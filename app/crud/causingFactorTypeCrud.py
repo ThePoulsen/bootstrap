@@ -47,6 +47,8 @@ def putCausingFactorType(data, uuid):
 
 def deleteCausingFactorType(uuid):
     entry = getCausingFactorType(uuid)
+    if entry.causingFactors:
+        return {'error': 'Causing Factor Type cannot be deleted as long as there are Causing Factors assigned this Causing Factor Type'}
     try:
         db.session.delete(entry)
         db.session.commit()

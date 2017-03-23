@@ -47,6 +47,8 @@ def putRiskResponse(data, uuid):
 
 def deleteRiskResponse(uuid):
     entry = getRiskResponse(uuid)
+    if entry.treatments:
+        return {'error': 'Risk Response cannot be deleted as long as there are Treatments assigned this Risk Response'}
     try:
         db.session.delete(entry)
         db.session.commit()

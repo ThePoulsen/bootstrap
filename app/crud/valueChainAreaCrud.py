@@ -47,6 +47,8 @@ def putValueChainArea(data, uuid):
 
 def deleteValueChainArea(uuid):
     entry = getValueChainArea(uuid)
+    if entry.valueChains:
+        return {'error': 'Value Chain Area cannot be deleted as long as there are Value Chains assigned this Value Chain Area'}
     try:
         db.session.delete(entry)
         db.session.commit()
