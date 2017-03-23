@@ -14,15 +14,15 @@ def getCausingFactor(uuid):
 def postCausingFactor(data):
     r = causingFactorTypeCrud.getCausingFactorType(data['causingFactorType'])
     if r == None:
-        causingFactorType_id = None
+        causingFactorType_uuid = None
     else:
-        causingFactorType_id = r.id
+        causingFactorType_uuid = r.uuid
 
     row = causingFactor(title = data['title'],
                         desc = data['desc'],
                         tenant_uuid = session['tenant_uuid'],
                         uuid = UUID.uuid4(),
-                        causingFactorType_id=causingFactorType_id,
+                        causingFactorType_uuid=causingFactorType_uuid,
                         causingFactorType=r,
                         created=datetime.now(),
                         createdBy=session['user_uuid'])
@@ -40,9 +40,9 @@ def postCausingFactor(data):
 def putCausingFactor(data, uuid):
     r = causingFactorTypeCrud.getCausingFactorType(data['causingFactorType'])
     if r == None:
-        causingFactorType_id = None
+        causingFactorType_uuid = None
     else:
-        causingFactorType_id = r.id
+        causingFactorType_uuid = r.uuid
 
     row = getCausingFactor(uuid)
 
@@ -50,7 +50,7 @@ def putCausingFactor(data, uuid):
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
-    row.causingFactorType_id = causingFactorType_id
+    row.causingFactorType_uuid = causingFactorType_uuid
     row.causingFactorType = r
 
     try:

@@ -16,23 +16,23 @@ def getTreatment(uuid):
 def postTreatment(data):
     t = treatmentTypeCrud.getTreatmentType(data['treatmentType'])
     if t == None:
-        treatmentType_id = None
+        treatmentType_uuid = None
     else:
-        treatmentType_id = t.id
+        treatmentType_uuid = t.uuid
 
     r = riskResponseCrud.getRiskResponse(data['riskResponse'])
     if r == None:
-        riskResponse_id = None
+        riskResponse_uuid = None
     else:
-        riskResponse_id = r.id
+        riskResponse_uuid = r.uuid
 
     row = treatment(title = data['title'],
                         desc = data['desc'],
                         tenant_uuid = session['tenant_uuid'],
                         uuid = UUID.uuid4(),
-                        treatmentType_id=treatmentType_id,
+                        treatmentType_uuid=treatmentType_uuid,
                         treatmentType=t,
-                        riskResponse_id=riskResponse_id,
+                        riskResponse_uuid=riskResponse_uuid,
                         riskResponse=r,
                         created=datetime.now(),
                         createdBy=session['user_uuid'])
@@ -50,15 +50,15 @@ def postTreatment(data):
 def putTreatment(data, uuid):
     t = treatmentTypeCrud.getTreatmentType(data['treatmentType'])
     if t == None:
-        treatmentType_id = None
+        treatmentType_uuid = None
     else:
-        treatmentType_id = t.id
+        treatmentType_uuid = t.uuid
 
     r = riskResponseCrud.getRiskResponse(data['riskResponse'])
     if r == None:
-        riskResponse_id = None
+        riskResponse_uuid = None
     else:
-        riskResponse_id = r.id
+        riskResponse_uuid = r.uuid
 
     row = getTreatment(uuid)
 
@@ -66,9 +66,9 @@ def putTreatment(data, uuid):
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
-    row.treatmentType_id = treatmentType_id
+    row.treatmentType_uuid = treatmentType_uuid
     row.treatmentType = t
-    row.riskResponse_id = riskResponse_id
+    row.riskResponse_uuid = riskResponse_uuid
     row.riskResponse = r
 
     try:

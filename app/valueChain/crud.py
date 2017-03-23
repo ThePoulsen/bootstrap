@@ -16,15 +16,15 @@ def getValueChain(uuid):
 def postValueChain(data):
     r = valueChainAreaCrud.getValueChainArea(data['valueChainArea'])
     if r == None:
-        valueChainArea_id = None
+        valueChainArea_uuid = None
     else:
-        valueChainArea_id = r.id
+        valueChainArea_uuid = r.uuid
 
     row = valueChain(title = data['title'],
                         desc = data['desc'],
                         tenant_uuid = session['tenant_uuid'],
                         uuid = UUID.uuid4(),
-                        valueChainArea_id=valueChainArea_id,
+                        valueChainArea_uuid=valueChainArea_uuid,
                         valueChainArea=r,
                         created=datetime.now(),
                         createdBy=session['user_uuid'])
@@ -42,9 +42,9 @@ def postValueChain(data):
 def putValueChain(data, uuid):
     r = valueChainAreaCrud.getValueChainArea(data['valueChainArea'])
     if r == None:
-        valueChainArea_id = None
+        valueChainArea_uuid = None
     else:
-        valueChainArea_id = r.id
+        valueChainArea_uuid = r.uuid
 
     row = getValueChain(uuid)
 
@@ -52,7 +52,7 @@ def putValueChain(data, uuid):
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
-    row.valueChainArea_id = valueChainArea_id
+    row.valueChainArea_uuid = valueChainArea_uuid
     row.valueChainArea = r
 
     try:

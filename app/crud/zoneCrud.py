@@ -14,16 +14,16 @@ def getZone(uuid):
 def postZone(data):
     c = countryCrud.getCountry(data['country'])
     if c == None:
-        country_id = None
+        country_uuid = None
     else:
-        country_id = c.id
+        country_uuid = c.uuid
     z = zone(title = data['title'],
              abbr = data['abbr'],
              tenant_uuid = session['tenant_uuid'],
              uuid = UUID.uuid4(),
              created=datetime.now(),
              createdBy=session['user_uuid'],
-             country_id=country_id,
+             country_uuid=country_uuid,
              country=c)
 
     try:
@@ -40,16 +40,16 @@ def putZone(data, uuid):
     z = getZone(uuid)
     c = countryCrud.getCountry(data['country'])
     if c == None:
-        country_id = None
+        country_uuid = None
     else:
-        country_id = c.id
+        country_uuid = c.uuid
 
     z.title = data['title']
     z.abbr = data['abbr']
     z.modified = datetime.now()
     z.modifiedBy = session['user_uuid']
     z.country = c
-    z.country_id = country_id
+    z.country_uuid = country_uuid
 
     try:
         db.session.commit()

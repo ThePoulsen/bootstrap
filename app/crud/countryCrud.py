@@ -14,16 +14,16 @@ def getCountry(uuid):
 def postCountry(data):
     r = subRegionCrud.getSubRegion(data['subRegion'])
     if r == None:
-        subRegion_id = None
+        subRegion_uuid = None
     else:
-        subRegion_id = r.id
+        subRegion_uuid = r.uuid
     c = country(title = data['title'],
                 abbr = data['abbr'],
                 tenant_uuid = session['tenant_uuid'],
                 uuid = UUID.uuid4(),
                 created=datetime.now(),
                 createdBy=session['user_uuid'],
-                subRegion_id=subRegion_id,
+                subRegion_uuid=subRegion_uuid,
                 subRegion=r)
 
     try:
@@ -40,16 +40,16 @@ def putCountry(data, uuid):
     c = getCountry(uuid)
     sr = subRegionCrud.getSubRegion(data['subRegion'])
     if sr == None:
-        subRegion_id = None
+        subRegion_uuid = None
     else:
-        subRegion_id = sr.id
+        subRegion_uuid = sr.uuid
 
     c.title = data['title']
     c.abbr = data['abbr']
     c.modified = datetime.now()
     c.modifiedBy = session['user_uuid']
     c.subRegion = sr
-    c.subRegion_id = subRegion_id
+    c.subRegion_uuid = subRegion_uuid
 
     try:
         db.session.commit()

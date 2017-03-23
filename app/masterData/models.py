@@ -15,6 +15,8 @@ class region(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
+    subRegions = db.relationship('subRegion', backref='region', lazy='dynamic')
+
 class subRegion(db.Model):
     __tablename__ = 'subRegion'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),
@@ -30,8 +32,9 @@ class subRegion(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
     
-    region_id = db.Column(db.Integer(), db.ForeignKey(region.id))
-    region = db.relationship(region, backref='subRegions')
+    region_uuid = db.Column(db.String(), db.ForeignKey('region.uuid'))
+
+    countries = db.relationship('country', backref='subRegion', lazy='dynamic')
 
 class country(db.Model):
     __tablename__ = 'country'
@@ -48,8 +51,8 @@ class country(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    subRegion_id = db.Column(db.Integer(), db.ForeignKey(subRegion.id))
-    subRegion = db.relationship(subRegion, backref='countries')
+    subRegion_uuid = db.Column(db.String(), db.ForeignKey('subRegion.uuid'))
+    zones = db.relationship('zone', backref='country', lazy='dynamic')
 
 class zone(db.Model):
     __tablename__ = 'zone'
@@ -66,8 +69,7 @@ class zone(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    country_id = db.Column(db.Integer(), db.ForeignKey(country.id))
-    country = db.relationship(country, backref='zones')
+    country_uuid = db.Column(db.String(), db.ForeignKey('country.uuid'))
 
 class status(db.Model):
     __tablename__ = 'status'

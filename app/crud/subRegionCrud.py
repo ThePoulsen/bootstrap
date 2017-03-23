@@ -14,16 +14,16 @@ def getSubRegion(uuid):
 def postSubRegion(data):
     r = regionCrud.getRegion(data['region'])
     if r == None:
-        region_id = None
+        region_uuid = None
     else:
-        region_id = r.id
+        region_uuid = r.uuid
     row = subRegion(title = data['title'],
                     abbr = data['abbr'],
                     tenant_uuid = session['tenant_uuid'],
                     uuid = UUID.uuid4(),
                     created=datetime.now(),
                     createdBy=session['user_uuid'],
-                    region_id=r.id,
+                    region_uuid=r.uuid,
                     region=r)
 
     try:
@@ -40,16 +40,16 @@ def putSubRegion(data, uuid):
     r = getSubRegion(uuid)
     reg = regionCrud.getRegion(data['region'])
     if reg == None:
-        region_id = None
+        region_uuid = None
     else:
-        region_id = reg.id
+        region_uuid = reg.uuid
 
     r.title = data['title']
     r.abbr = data['abbr']
     r.modified = datetime.now()
     r.modifiedBy = session['user_uuid']
     r.region = reg
-    r.region_id = region_id
+    r.region_uuid = region_uuid
 
     try:
         db.session.commit()
