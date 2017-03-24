@@ -15,4 +15,4 @@ class causingFactor(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    causingFactorType_uuid = db.Column(db.String(), db.ForeignKey('causingFactorType.uuid'))
+    causingFactorType_uuid = db.Column(db.String(), db.ForeignKey('causingFactorType.uuid'), nullable=False)

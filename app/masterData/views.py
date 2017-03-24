@@ -2,8 +2,8 @@
 
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
-from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, severityCrud, likelihoodCrud, causingFactorTypeCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud, deliveryPointCrud, valueChainStepTypeCrud
-from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, severityForm, likelihoodForm, causingFactorTypeForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm, deliveryPointForm, valueChainStepTypeForm
+from app.crud import regionCrud, subRegionCrud, countryCrud, zoneCrud, statusCrud, treatmentTypeCrud, riskResponseCrud, eventTypeCrud, impactCrud, probabilityCrud, causingFactorTypeCrud, processAreaCrud, riskAreaCrud, riskTypeCrud, valueChainAreaCrud, deliveryPointCrud, valueChainStepTypeCrud
+from forms import regionForm, subRegionForm, countryForm, zoneForm, statusForm, treatmentTypeForm, riskResponseForm, eventTypeForm, impactForm, probabilityForm, causingFactorTypeForm, processAreaForm, riskAreaForm, riskTypeForm, valueChainAreaForm, deliveryPointForm, valueChainStepTypeForm
 
 mdBP = Blueprint('mdBP', __name__)
 
@@ -162,12 +162,12 @@ def subRegionView(function=None, uuid=None):
     putExecs = ['data = getCrud(uuid)',
                 'putForm = subRegionForm(title=data.title,abbr=data.abbr,region=data.region.uuid if data.region else "")',
                 'regions = regionCrud.regionSelectData()',
-                'regions.insert(0,("0","Select Region"))',
+                'regions.insert(0,("","Select Region"))',
                 'putForm.region.choices = regions']
 
     # Post variables
     postExecs = ['regions = regionCrud.regionSelectData()',
-                 'regions.insert(0,("0","Select Region"))',
+                 'regions.insert(0,("","Select Region"))',
                  'postForm.region.choices = regions',]
 
     # --------------------------------------------------------------------------------------------
@@ -279,12 +279,12 @@ def countryView(function=None, uuid=None):
     putExecs = ['data = getCrud(uuid)',
                 'putForm = countryForm(title=data.title,abbr=data.abbr,subRegion=data.subRegion.uuid if data.subRegion else "")',
                 'subRegions = subRegionCrud.subRegionSelectData()',
-                'subRegions.insert(0,("0","Select Sub Region"))',
+                'subRegions.insert(0,("","Select Sub Region"))',
                 'putForm.subRegion.choices = subRegions']
 
     # Post variables
     postExecs = ['subRegions = subRegionCrud.subRegionSelectData()',
-                 'subRegions.insert(0,("0","Select Sub Region"))',
+                 'subRegions.insert(0,("","Select Sub Region"))',
                  'postForm.subRegion.choices = subRegions']
 
     # --------------------------------------------------------------------------------------------
@@ -396,12 +396,12 @@ def zoneView(function=None, uuid=None):
     putExecs = ['data = getCrud(uuid)',
                 'putForm = zoneForm(title=data.title,abbr=data.abbr,country=data.country.uuid if data.country else "")',
                 'countries = countryCrud.countrySelectData()',
-                'countries.insert(0,("0","Select Country"))',
+                'countries.insert(0,("","Select Country"))',
                 'putForm.country.choices = countries']
 
     # Post variables
     postExecs = ['countries = countryCrud.countrySelectData()',
-                 'countries.insert(0,("0","Select Country"))',
+                 'countries.insert(0,("","Select Country"))',
                  'postForm.country.choices = countries']
 
     # --------------------------------------------------------------------------------------------
@@ -912,17 +912,17 @@ def eventTypeView(function=None, uuid=None):
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
 
-@mdBP.route('/severity', methods=['GET','POST'])
-@mdBP.route('/severity/<string:function>', methods=['GET','POST'])
-@mdBP.route('/severity/<string:function>/<string:uuid>', methods=['GET','POST'])
+@mdBP.route('/impact', methods=['GET','POST'])
+@mdBP.route('/impact/<string:function>', methods=['GET','POST'])
+@mdBP.route('/impact/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator'])
-def severityView(function=None, uuid=None):
+def impactView(function=None, uuid=None):
     # Universal vars
-    viewName = 'Severity'
-    viewURL = 'mdBP.severityView'
-    listColumns = ['Value', 'Severity', 'Description']
-    templateView = 'masterData/severity.html'
+    viewName = 'Impact'
+    viewURL = 'mdBP.impactView'
+    listColumns = ['Value', 'Impact', 'Description']
+    templateView = 'masterData/impact.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
@@ -931,25 +931,25 @@ def severityView(function=None, uuid=None):
               'details': False}
 
     # Cruds
-    listCrud = severityCrud.severityListData
-    getCrud = severityCrud.getSeverity
-    postCrud = severityCrud.postSeverity
-    putCrud = severityCrud.putSeverity
-    deleteCrud = severityCrud.deleteSeverity
+    listCrud = impactCrud.impactListData
+    getCrud = impactCrud.getImpact
+    postCrud = impactCrud.postImpact
+    putCrud = impactCrud.putImpact
+    deleteCrud = impactCrud.deleteImpact
 
-    postForm = severityForm()
+    postForm = impactForm()
     postData = {'title':postForm.title.data,
                 'desc':postForm.desc.data,
                 'value':postForm.value.data}
 
-    putForm = severityForm()
+    putForm = impactForm()
     putData = {'title':putForm.title.data,
                'desc':putForm.desc.data,
                'value':putForm.value.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'putForm = severityForm(title=data.title, desc=data.desc, value=data.value)']
+                'putForm = impactForm(title=data.title, desc=data.desc, value=data.value)']
 
     # Post variables
     postExecs = []
@@ -1024,17 +1024,17 @@ def severityView(function=None, uuid=None):
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
 
-@mdBP.route('/likelihood', methods=['GET','POST'])
-@mdBP.route('/likelihood/<string:function>', methods=['GET','POST'])
-@mdBP.route('/likelihood/<string:function>/<string:uuid>', methods=['GET','POST'])
+@mdBP.route('/probability', methods=['GET','POST'])
+@mdBP.route('/probability/<string:function>', methods=['GET','POST'])
+@mdBP.route('/probability/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator'])
-def likelihoodView(function=None, uuid=None):
+def probabilityView(function=None, uuid=None):
     # Universal vars
-    viewName = 'Likelihood'
-    viewURL = 'mdBP.likelihoodView'
-    listColumns = ['Value', 'Likelihood','Description']
-    templateView = 'masterData/likelihood.html'
+    viewName = 'Probability'
+    viewURL = 'mdBP.probabilityView'
+    listColumns = ['Value', 'Probability','Description']
+    templateView = 'masterData/probability.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
@@ -1043,25 +1043,25 @@ def likelihoodView(function=None, uuid=None):
               'details': False}
 
     # Cruds
-    listCrud = likelihoodCrud.likelihoodListData
-    getCrud = likelihoodCrud.getLikelihood
-    postCrud = likelihoodCrud.postLikelihood
-    putCrud = likelihoodCrud.putLikelihood
-    deleteCrud = likelihoodCrud.deleteLikelihood
+    listCrud = probabilityCrud.probabilityListData
+    getCrud = probabilityCrud.getProbability
+    postCrud = probabilityCrud.postProbability
+    putCrud = probabilityCrud.putProbability
+    deleteCrud = probabilityCrud.deleteProbability
 
-    postForm = likelihoodForm()
+    postForm = probabilityForm()
     postData = {'title':postForm.title.data,
                 'desc':postForm.desc.data,
                 'value':postForm.value.data}
 
-    putForm = likelihoodForm()
+    putForm = probabilityForm()
     putData = {'title':putForm.title.data,
                'desc':putForm.desc.data,
                'value':putForm.value.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'putForm = likelihoodForm(title=data.title, desc=data.desc, value=data.value)']
+                'putForm = probabilityForm(title=data.title, desc=data.desc, value=data.value)']
 
     # Post variables
     postExecs = []

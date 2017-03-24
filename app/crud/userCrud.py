@@ -5,11 +5,15 @@ from datetime import datetime
 from authAPI import authAPI
 import os
 from app.services.services import sendMail
+from app.audit.services import logEntry, viewLog, postLog, deleteLog, putLog, errorLog
+from app.services.services import compareDict
 
 def getUsers():
+    viewLog(table='user')
     return user.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
 
 def getUser(uuid):
+    viewLog(table='user', uuid=unicode(uuid))
     return user.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
 
 def postUser(data):
@@ -20,6 +24,7 @@ def postUser(data):
 
     try:
         user.query.filter_by(tenant_uuid=tenant_uuid, email=data['email']).first().name
+        errorLog('Unique constraint', table='user')
         return {'error': 'User already exist'}
 
     except:
@@ -31,6 +36,7 @@ def postUser(data):
         req = authAPI('user', method='post', dataDict=dataDict, token=session['token'])
 
         if 'error' in req:
+            errorLog(req['error'], table='user')
             return {'error': req['error']}
 
         else:
@@ -68,11 +74,14 @@ def postUser(data):
             try:
                 db.session.add(usr)
                 db.session.commit()
+                postLog(table='user', uuid=unicode(row.uuid))
                 return {'success': 'User has been added'}
             except Exception as E:
                 if 'unique constraint' in unicode(E):
+                    errorLog('Unique constraint', table='user')
                     return {'error': 'User already exist'}
                 else:
+                    errorLog(unicode(E), table='user')
                     return {'error': unicode(E)}
 
 def confirmUser(uuid, tenant_uuid):
@@ -80,12 +89,28 @@ def confirmUser(uuid, tenant_uuid):
         usr = user.query.filter_by(uuid=uuid, tenant_uuid=tenant_uuid).first()
         usr.confirmed = True
         db.session.commit()
+        logEntry('User confirmed: {}'.format(usr.uuid), table='user')
         return {'success':'User confirmed'}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def putUser(data, uuid):
     usr = getUser(uuid)
+    changes = compareDict(row=row, data=data)['modified']
+
+    try:
+        currentGroups = [r.uuid for r in usr.groups]
+    except:
+        currentGroups = []
+    try:
+        newGroups = [group.query.filter_by(uuid=unicode(r)).first().uuid for r in data['groups']]
+    except:
+        newGroups = []
+
+    if currentGroups != newGroups:
+        changes['groups'] = (currentGroups,newGroups)
+
     usr.groups = [group.query.filter_by(uuid=unicode(r)).first() for r in data['groups']]
     usr.initials = data['initials']
     usr.name = data['name']
@@ -107,13 +132,17 @@ def putUser(data, uuid):
         req = authAPI(endpoint='user/'+unicode(uuid), method='put', dataDict=dataDict, token=session['token'])
 
         if not 'error' in req:
+            putLog(table='user', uuid=unicode(uuid), changes=changes)
             return {'success':'User has been modified'}
         else:
+            errorLog(req['error'], table='user')
             return {'error':req['error']}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='user')
             return {'error': 'User already exist'}
         else:
+            errorLog(unicode(E), table='user')
             return {'error': unicode(E)}
 
 def deactivateUser(uuid):
@@ -121,8 +150,10 @@ def deactivateUser(uuid):
         usr = getUser(uuid)
         usr.active = False
         db.session.commit()
+        logEntry('User deactivated: {}'.format(usr.uuid), table='user')
         return {'success': 'User has been deactivated'}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def activateUser(uuid):
@@ -130,8 +161,10 @@ def activateUser(uuid):
         usr = getUser(uuid)
         usr.active = True
         db.session.commit()
+        logEntry('User activated: {}'.format(usr.uuid), table='user')
         return {'success': 'User has been activated'}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def deleteUser(uuid):
@@ -142,12 +175,16 @@ def deleteUser(uuid):
             try:
                 db.session.delete(usr)
                 db.session.commit()
+                deleteLog(table='user', uuid=unicode(uuid))
                 return {'success': 'User has been activated'}
             except Exception as E:
+                errorLog(unicode(E), table='user')
                 return {'error':unicode(E)}
         else:
+            errorLog(req['error'], table='user')
             return {'error':req['error']}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def lockUser(uuid):
@@ -158,12 +195,16 @@ def lockUser(uuid):
             try:
                 usr.locked = True
                 db.session.commit()
+                logEntry('User locked: {}'.format(usr.uuid), table='user')
                 return {'success': 'User has been locked out of the system'}
             except Exception as E:
+                errorLog(unicode(E), table='user')
                 return {'error':unicode(E)}
         else:
+            errorLog(req['error'], table='user')
             return {'error': req['error']}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def unlockUser(uuid):
@@ -174,22 +215,28 @@ def unlockUser(uuid):
             try:
                 usr.locked = False
                 db.session.commit()
+                logEntry('User unlocked: {}'.format(usr.uuid), table='user')
                 return {'success': 'User can now use the system again'}
             except Exception as E:
+                errorLog(unicode(E), table='user')
                 return {'error':unicode(E)}
         else:
+            errorLog(req['error'], table='user')
             return {'error': req['error']}
     except Exception as E:
+        errorLog(unicode(E), table='user')
         return {'error':unicode(E)}
 
 def setContactUser(uuid):
     usr = getUser(uuid)
     usr.locked = True
+    logEntry('User now contact: {}'.format(usr.uuid), table='user')
     db.session.commit()
 
 def removeContactUser(uuid):
     usr = getUser(uuid)
     usr.locked = False
+    logEntry('User no longer contact: {}'.format(usr.uuid), table='user')
     db.session.commit()
 
 def userSelectData():

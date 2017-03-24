@@ -32,6 +32,7 @@ from app.user.models import *
 from app.valueChain.models import *
 from app.causingFactor.models import *
 from app.treatment.models import *
+from app.audit.models import *
 
 ## import blueprints
 from .indexView import indexBP

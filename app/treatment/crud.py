@@ -6,87 +6,88 @@ from app.treatment.models import treatment
 import uuid as UUID
 from datetime import datetime
 from app.crud import treatmentTypeCrud, riskResponseCrud
+from app.audit.services import logEntry, viewLog, postLog, deleteLog, putLog, errorLog
+from app.services.services import compareDict
 
 def getTreatments():
+    viewLog(table='treatment')
     return treatment.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
 
 def getTreatment(uuid):
+    viewLog(table='treatment', uuid=unicode(uuid))
     return treatment.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
 
 def postTreatment(data):
     t = treatmentTypeCrud.getTreatmentType(data['treatmentType'])
-    if t == None:
-        treatmentType_uuid = None
-    else:
-        treatmentType_uuid = t.uuid
-
     r = riskResponseCrud.getRiskResponse(data['riskResponse'])
-    if r == None:
-        riskResponse_uuid = None
-    else:
-        riskResponse_uuid = r.uuid
 
     row = treatment(title = data['title'],
-                        desc = data['desc'],
-                        tenant_uuid = session['tenant_uuid'],
-                        uuid = UUID.uuid4(),
-                        treatmentType_uuid=treatmentType_uuid,
-                        treatmentType=t,
-                        riskResponse_uuid=riskResponse_uuid,
-                        riskResponse=r,
-                        created=datetime.now(),
-                        createdBy=session['user_uuid'])
+                    desc = data['desc'],
+                    tenant_uuid = session['tenant_uuid'],
+                    uuid = UUID.uuid4(),
+                    treatmentType_uuid=t.uuid,
+                    treatmentType=t,
+                    riskResponse_uuid=r.uuid,
+                    riskResponse=r,
+                    created=datetime.now(),
+                    createdBy=session['user_uuid'])
 
     try:
         db.session.add(row)
         db.session.commit()
+        postLog(table='treatment', uuid=unicode(row.uuid))
         return {'success': 'Treatment added'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='treatment')
             return {'error': 'Treatment already exist'}
         else:
+            errorLog(unicode(E), table='treatment')
             return {'error': unicode(E)}
 
 def putTreatment(data, uuid):
-    t = treatmentTypeCrud.getTreatmentType(data['treatmentType'])
-    if t == None:
-        treatmentType_uuid = None
-    else:
-        treatmentType_uuid = t.uuid
-
-    r = riskResponseCrud.getRiskResponse(data['riskResponse'])
-    if r == None:
-        riskResponse_uuid = None
-    else:
-        riskResponse_uuid = r.uuid
-
     row = getTreatment(uuid)
+    t = treatmentTypeCrud.getTreatmentType(data['treatmentType'])
+    r = riskResponseCrud.getRiskResponse(data['riskResponse'])
 
+    # Discover changes to row
+    changes = compareDict(row=row, data=data)['modified']
+    if t != row.treatmentType:
+        changes['treatmentType'] = (row.treatmentType.uuid,t.uuid)
+    if r != row.riskResponse:
+        changes['riskResponse'] = (row.riskResponse.uuid,r.uuid)
+
+    # Assign changes to row
     row.title = data['title']
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
-    row.treatmentType_uuid = treatmentType_uuid
-    row.treatmentType = t
-    row.riskResponse_uuid = riskResponse_uuid
+    row.riskResponse_uuid = r.uuid
     row.riskResponse = r
+    row.treatmentType_uuid = t.uuid
+    row.treatmentType = t
 
     try:
         db.session.commit()
+        putLog(table='treatment', uuid=unicode(uuid), changes=changes)
         return {'success': 'Treatment updated'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='treatment')
             return {'error': 'Treatment already exist'}
         else:
+            errorLog(unicode(E), table='treatment')
             return {'error': unicode(E)}
 
 def deleteTreatment(uuid):
-    entry = getTreatment(uuid)
+    row = getTreatment(uuid)
     try:
-        db.session.delete(entry)
+        req = deleteLog(table='treatment', uuid=unicode(uuid))
+        db.session.delete(row)
         db.session.commit()
         return {'success': 'Treatment deleted'}
     except Exception as E:
+        errorLog(unicode(E), table='treatment')
         return {'error': unicode(E)}
 
 def treatmentSelectData():

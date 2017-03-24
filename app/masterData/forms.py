@@ -15,21 +15,21 @@ class regionForm(FlaskForm):
 class subRegionForm(FlaskForm):
     title = StringField('Sub Region title',[InputRequired('Please enter a Sub Region title')])
     abbr = StringField('Sub Region Abbreviation', [InputRequired("Please enter an abbreviation for the Sub Region title")])
-    region = SelectField('Region', widget=select2Widget())
+    region = SelectField('Region', widget=select2Widget(), validators=[InputRequired('Please select a Region')])
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
 class countryForm(FlaskForm):
     title = StringField('Country title',[InputRequired('Please enter a Country title')])
     abbr = StringField('Country Abbreviation', [InputRequired("Please enter an abbreviation for the Country title")])
-    subRegion = SelectField('Sub Region', widget=select2Widget())
+    subRegion = SelectField('Sub Region', widget=select2Widget(), validators=[InputRequired('Please select a Sub Region')])
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
 class zoneForm(FlaskForm):
     title = StringField('Zone title',[InputRequired('Please enter a Zone title')])
     abbr = StringField('Zone Abbreviation', [InputRequired("Please enter an abbreviation for the Zone title")])
-    country = SelectField('Country', widget=select2Widget())
+    country = SelectField('Country', widget=select2Widget(), validators=[InputRequired('Please select a Country')])
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
@@ -56,16 +56,16 @@ class eventTypeForm(FlaskForm):
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
-class severityForm(FlaskForm):
-    value = IntegerField('Value',[InputRequired('Please enter a Severity Value')])
-    title = StringField('Severity',[InputRequired('Please enter a Severity')])
+class impactForm(FlaskForm):
+    value = IntegerField('Value',[InputRequired('Please enter a Impact Value')])
+    title = StringField('Impact',[InputRequired('Please enter a Impact')])
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')
 
-class likelihoodForm(FlaskForm):
-    value = IntegerField('Value',[InputRequired('Please enter a Likelihood Value')])
-    title = StringField('Likelihood',[InputRequired('Please enter a Likelihood')])
+class probabilityForm(FlaskForm):
+    value = IntegerField('Value',[InputRequired('Please enter a Probability Value')])
+    title = StringField('Probability',[InputRequired('Please enter a Probability')])
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')

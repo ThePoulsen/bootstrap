@@ -4,19 +4,19 @@ from app.masterData.models import subRegion
 import regionCrud
 import uuid as UUID
 from datetime import datetime
+from app.audit.services import logEntry, viewLog, postLog, deleteLog, putLog, errorLog
+from app.services.services import compareDict
 
 def getSubRegions():
+    viewLog(table='subRegion')
     return subRegion.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
 
 def getSubRegion(uuid):
+    viewLog(table='subRegion', uuid=unicode(uuid))
     return subRegion.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
 
 def postSubRegion(data):
     r = regionCrud.getRegion(data['region'])
-    if r == None:
-        region_uuid = None
-    else:
-        region_uuid = r.uuid
     row = subRegion(title = data['title'],
                     abbr = data['abbr'],
                     tenant_uuid = session['tenant_uuid'],
@@ -29,52 +29,60 @@ def postSubRegion(data):
     try:
         db.session.add(row)
         db.session.commit()
+        postLog(table='subRegion', uuid=unicode(row.uuid))
         return {'success': 'Sub Region added'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='subRegion')
             return {'error': 'Sub Region already exist'}
         else:
+            errorLog(unicode(E), table='subRegion')
             return {'error': unicode(E)}
 
 def putSubRegion(data, uuid):
-    r = getSubRegion(uuid)
+    row = getSubRegion(uuid)
     reg = regionCrud.getRegion(data['region'])
-    if reg == None:
-        region_uuid = None
-    else:
-        region_uuid = reg.uuid
+    changes = compareDict(row=row, data=data)['modified']
+    if reg != row.region:
+        changes['region'] = (row.region.uuid,r.uuid)
 
-    r.title = data['title']
-    r.abbr = data['abbr']
-    r.modified = datetime.now()
-    r.modifiedBy = session['user_uuid']
-    r.region = reg
-    r.region_uuid = region_uuid
+    row.title = data['title']
+    row.abbr = data['abbr']
+    row.modified = datetime.now()
+    row.modifiedBy = session['user_uuid']
+    row.region = reg
+    row.region_uuid = reg.uuid
 
     try:
         db.session.commit()
+        putLog(table='subRegion', uuid=unicode(uuid), changes=changes)
         return {'success': 'Sub Region updated'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='subRegion')
             return {'error': 'Sub Region already exist'}
         else:
+            errorLog(unicode(E), table='subRegion')
             return {'error': unicode(E)}
 
 def deleteSubRegion(uuid):
-    r = getSubRegion(uuid)
-    if not r.countries:
+    row = getSubRegion(uuid)
+    if not row.countries:
         try:
-            db.session.delete(r)
+            db.session.delete(row)
             db.session.commit()
+            deleteLog(table='subRegion', uuid=unicode(uuid))
             return {'success': 'Region deleted'}
         except Exception as E:
+            errorLog(unicode(E), table='subRegion')
             return {'error': unicode(E)}
     else:
+        errorLog('Delete attempt without removing Countries', table='subRegion')
         return {'error': 'You must first remove countries from Sub Region'}
 
 def subRegionSelectData():
     subRegions = getSubRegions()
-    dataList = [] #[(0,'Select Sub Region')]
+    dataList = []
     for sr in subRegions:
         dataList.append((sr.uuid, sr.title))
     return dataList

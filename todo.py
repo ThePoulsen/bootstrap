@@ -22,17 +22,6 @@ Todo
 make 10 different project data columns
 program settings - name project data columns - enable/disable extra columns
 
-create audit trail
-
-table log
-    id
-    uuid
-    timestamp
-    user_uuid
-    tenant_uuid
-    table
-    tableRow_uuid
-    event
 
 
 
@@ -62,3 +51,14 @@ done
         valueChainArea
         valueChainStepType
         zone
+
+create audit trail:
+    table log
+        id
+        uuid
+        timestamp
+        user_uuid
+        tenant_uuid
+        table
+        tableRow_uuid
+        event

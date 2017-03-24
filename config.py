@@ -31,7 +31,7 @@ class DevelopmentConfig(BaseConfig):
     DEBUG = True
     TESTING = False
     SQLALCHEMY_DATABASE_URI             = os.environ['db']
-    SQLALCHEMY_TRACK_MODIFICATIONS      = False
+    SQLALCHEMY_TRACK_MODIFICATIONS      = True
     MINIFY_PAGE                         = False
 
 class TestingConfig(BaseConfig):

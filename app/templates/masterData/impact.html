@@ -3,7 +3,7 @@
 {% block title %}User profile{% endblock %}
 
 {% block breadCrumb %}
-    <li><a href="{{url_for('mdBP.likelihoodView')}}">Likelihoods</a></li>
+    <li><a href="{{url_for('mdBP.impactView')}}">Impact</a></li>
 {% endblock %}
 
 {% block pageContent %}
@@ -72,7 +72,7 @@
             </table>
 
             {% else %}
-            <form method="post" name="likelihoodForm" id="likelihoodForm">
+            <form method="post" name="impactForm" id="impactForm">
                 <div class="form-group">
                     {{ form.value.label }}
                     {{ form.value(class_='form-control ')}}
@@ -105,7 +105,7 @@
                 {% endif %}
                 <div style="float:right;">
                     {{ form.csrf_token }}
-                    <a href="{{url_for('mdBP.likelihoodView')}}">Cancel</a> &nbsp
+                    <a href="{{url_for('mdBP.impactView')}}">Cancel</a> &nbsp
                     {{ form.submit(class='btn btn-primary') }}
                 </div>
             </form>

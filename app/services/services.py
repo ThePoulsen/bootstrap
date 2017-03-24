@@ -5,6 +5,24 @@ from functools import wraps
 from authAPI import authAPI
 from flask_mail import Message
 from wtforms import widgets, validators, DecimalField
+from sqlalchemy import inspect
+
+def compareDict(row, data):
+    row = objectAsDict(row)
+    d1_keys = set(row.keys())
+    d2_keys = set(data.keys())
+    intersect_keys = d1_keys.intersection(d2_keys)
+
+    added = d1_keys - d2_keys
+    removed = d2_keys - d1_keys
+    modified = {o : (row[o], data[o]) for o in intersect_keys if row[o] != data[o]}
+    same = set(o for o in intersect_keys if row[o] == data[o])
+    return {'added':added, 'removed':removed, 'modified':modified, 'same':same}
+
+def objectAsDict(obj):
+    excludeList = ['_password','platform_uuid','tenant_uuid','id']
+    return {c.key: getattr(obj, c.key)
+            for c in inspect(obj).mapper.column_attrs if not c.key in excludeList}
 
 def errorMessage(msg):
     return flash(str(msg), ('danger', 'Error'))

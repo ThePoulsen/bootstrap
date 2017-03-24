@@ -32,7 +32,7 @@ class subRegion(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
     
-    region_uuid = db.Column(db.String(), db.ForeignKey('region.uuid'))
+    region_uuid = db.Column(db.String(), db.ForeignKey('region.uuid'), nullable=False)
 
     countries = db.relationship('country', backref='subRegion', lazy='dynamic')
 
@@ -51,7 +51,7 @@ class country(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    subRegion_uuid = db.Column(db.String(), db.ForeignKey('subRegion.uuid'))
+    subRegion_uuid = db.Column(db.String(), db.ForeignKey('subRegion.uuid'), nullable=False)
     zones = db.relationship('zone', backref='country', lazy='dynamic')
 
 class zone(db.Model):
@@ -69,7 +69,7 @@ class zone(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    country_uuid = db.Column(db.String(), db.ForeignKey('country.uuid'))
+    country_uuid = db.Column(db.String(), db.ForeignKey('country.uuid'), nullable=False)
 
 class status(db.Model):
     __tablename__ = 'status'
@@ -130,8 +130,8 @@ class eventType(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-class severity(db.Model):
-    __tablename__ = 'severity'
+class impact(db.Model):
+    __tablename__ = 'impact'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
@@ -145,8 +145,8 @@ class severity(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-class likelihood(db.Model):
-    __tablename__ = 'likelihood'
+class probability(db.Model):
+    __tablename__ = 'probability'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
 
     id = db.Column(db.Integer, primary_key=True)
@@ -232,7 +232,7 @@ class valueChainArea(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    valueChains = db.relationship('valueChain', backref='valueChainType', lazy='dynamic')
+    valueChains = db.relationship('valueChain', backref='valueChainArea', lazy='dynamic')
 
 class valueChainStepType(db.Model):
     __tablename__ = 'valueChainStepType'

@@ -18,4 +18,4 @@ class valueChain(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    valueChainArea_uuid = db.Column(db.String, db.ForeignKey('valueChainArea.uuid'))
+    valueChainArea_uuid = db.Column(db.String, db.ForeignKey('valueChainArea.uuid'), nullable=False)

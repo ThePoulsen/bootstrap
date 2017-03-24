@@ -4,85 +4,90 @@ from app.masterData.models import country
 import subRegionCrud
 import uuid as UUID
 from datetime import datetime
+from app.audit.services import logEntry, viewLog, postLog, deleteLog, putLog, errorLog
+from app.services.services import compareDict
 
 def getCountries():
+    viewLog(table='country')
     return country.query.filter_by(tenant_uuid=session['tenant_uuid']).all()
 
 def getCountry(uuid):
+    viewLog(table='country', uuid=unicode(uuid))
     return country.query.filter_by(uuid=uuid, tenant_uuid=session['tenant_uuid']).first()
 
 def postCountry(data):
-    r = subRegionCrud.getSubRegion(data['subRegion'])
-    if r == None:
-        subRegion_uuid = None
-    else:
-        subRegion_uuid = r.uuid
-    c = country(title = data['title'],
+    sr = subRegionCrud.getSubRegion(data['subRegion'])
+    row = country(title = data['title'],
                 abbr = data['abbr'],
                 tenant_uuid = session['tenant_uuid'],
                 uuid = UUID.uuid4(),
                 created=datetime.now(),
                 createdBy=session['user_uuid'],
-                subRegion_uuid=subRegion_uuid,
-                subRegion=r)
+                subRegion_uuid=sr.uuid,
+                subRegion=sr)
 
     try:
-        db.session.add(c)
+        db.session.add(row)
         db.session.commit()
+        postLog(table='country', uuid=unicode(row.uuid))
         return {'success': 'Country added'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='country')
             return {'error': 'Country already exist'}
         else:
+            errorLog(unicode(E), table='country')
             return {'error': unicode(E)}
 
 def putCountry(data, uuid):
-    c = getCountry(uuid)
+    row = getCountry(uuid)
+    changes = compareDict(row=row, data=data)['modified']
     sr = subRegionCrud.getSubRegion(data['subRegion'])
-    if sr == None:
-        subRegion_uuid = None
-    else:
-        subRegion_uuid = sr.uuid
 
-    c.title = data['title']
-    c.abbr = data['abbr']
-    c.modified = datetime.now()
-    c.modifiedBy = session['user_uuid']
-    c.subRegion = sr
-    c.subRegion_uuid = subRegion_uuid
+    row.title = data['title']
+    row.abbr = data['abbr']
+    row.modified = datetime.now()
+    row.modifiedBy = session['user_uuid']
+    row.subRegion = sr
+    row.subRegion_uuid = sr.uuid
 
     try:
         db.session.commit()
+        putLog(table='country', uuid=unicode(uuid), changes=changes)
         return {'success': 'Country updated'}
     except Exception as E:
         if 'unique constraint' in unicode(E):
+            errorLog('Unique constraint', table='country')
             return {'error': 'Country already exist'}
         else:
+            errorLog(unicode(E), table='country')
             return {'error': unicode(E)}
 
 def deleteCountry(uuid):
-    c = getCountry(uuid)
-    if not c.zones:
+    row = getCountry(uuid)
+    if not row.zones:
         try:
-            db.session.delete(c)
+            db.session.delete(row)
             db.session.commit()
+            deleteLog(table='country', uuid=unicode(uuid))
             return {'success': 'Country deleted'}
         except Exception as E:
+            errorLog(unicode(E), table='country')
             return {'error': unicode(E)}
     else:
         return {'error': 'You must first remove zones from Sub Region'}
 
 def countrySelectData():
-    countries = getCountries()
+    rows = getCountries()
     dataList = [] #[(0,'Select Country')]
-    for sr in countries:
-        dataList.append((sr.uuid, sr.title))
+    for c in rows:
+        dataList.append((c.uuid, c.title))
     return dataList
 
 def countryListData():
-    countries = getCountries()
+    rows = getCountries()
     data = []
-    for c in countries:
+    for c in rows:
         temp = [c.uuid, c.title, c.abbr, c.subRegion.abbr if c.subRegion else '']
         data.append(temp)
     return data

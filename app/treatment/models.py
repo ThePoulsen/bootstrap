@@ -18,5 +18,5 @@ class treatment(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    treatmentType_uuid = db.Column(db.String, db.ForeignKey('treatmentType.uuid'))
-    riskResponse_uuid = db.Column(db.String, db.ForeignKey('riskResponse.uuid'))
+    treatmentType_uuid = db.Column(db.String, db.ForeignKey('treatmentType.uuid'), nullable=False)
+    riskResponse_uuid = db.Column(db.String, db.ForeignKey('riskResponse.uuid'), nullable=False)
