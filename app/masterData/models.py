@@ -145,6 +145,8 @@ class impact(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
+    ratings = db.relationship('rating', backref='impact', lazy='dynamic')
+
 class probability(db.Model):
     __tablename__ = 'probability'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
@@ -159,6 +161,8 @@ class probability(db.Model):
     created = db.Column(db.DateTime(), nullable=False)
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
+
+    ratings = db.relationship('rating', backref='probability', lazy='dynamic')
 
 class causingFactorType(db.Model):
     __tablename__ = 'causingFactorType'

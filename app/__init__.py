@@ -33,6 +33,7 @@ from app.valueChain.models import *
 from app.causingFactor.models import *
 from app.treatment.models import *
 from app.audit.models import *
+from app.rating.models import *
 
 ## import blueprints
 from .indexView import indexBP
@@ -42,12 +43,14 @@ from app.masterData.views import mdBP
 from app.valueChain.views import valueChainBP
 from app.causingFactor.views import causingFactorBP
 from app.treatment.views import treatmentBP
+from app.rating.views import ratingBP
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
 app.register_blueprint(authBP, url_prefix='')
 app.register_blueprint(userBP, url_prefix='')
 app.register_blueprint(mdBP, url_prefix='/masterData')
-app.register_blueprint(valueChainBP, url_prefix='/valueChain')
-app.register_blueprint(causingFactorBP, url_prefix='/causingFactor')
-app.register_blueprint(treatmentBP, url_prefix='/treatment')
+app.register_blueprint(valueChainBP, url_prefix='/')
+app.register_blueprint(causingFactorBP, url_prefix='/')
+app.register_blueprint(treatmentBP, url_prefix='/')
+app.register_blueprint(ratingBP, url_prefix='/')
