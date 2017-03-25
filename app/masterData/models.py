@@ -15,7 +15,7 @@ class region(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    subRegions = db.relationship('subRegion', backref='region', lazy='dynamic')
+    subRegions = db.relationship('subRegion', backref='region', lazy='dynamic', passive_deletes='all')
 
 class subRegion(db.Model):
     __tablename__ = 'subRegion'
@@ -34,7 +34,7 @@ class subRegion(db.Model):
     
     region_uuid = db.Column(db.String(), db.ForeignKey('region.uuid'), nullable=False)
 
-    countries = db.relationship('country', backref='subRegion', lazy='dynamic')
+    countries = db.relationship('country', backref='subRegion', lazy='dynamic', passive_deletes='all')
 
 class country(db.Model):
     __tablename__ = 'country'
@@ -52,7 +52,7 @@ class country(db.Model):
     modified = db.Column(db.DateTime())
 
     subRegion_uuid = db.Column(db.String(), db.ForeignKey('subRegion.uuid'), nullable=False)
-    zones = db.relationship('zone', backref='country', lazy='dynamic')
+    zones = db.relationship('zone', backref='country', lazy='dynamic', passive_deletes='all')
 
 class zone(db.Model):
     __tablename__ = 'zone'
@@ -98,7 +98,7 @@ class treatmentType(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    treatments = db.relationship('treatment', backref='treatmentType', lazy='dynamic')
+    treatments = db.relationship('treatment', backref='treatmentType', lazy='dynamic', passive_deletes='all')
 
 class riskResponse(db.Model):
     __tablename__ = 'riskResponse'
@@ -114,7 +114,7 @@ class riskResponse(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    treatments = db.relationship('treatment', backref='riskResponse', lazy='dynamic')
+    treatments = db.relationship('treatment', backref='riskResponse', lazy='dynamic', passive_deletes='all')
 
 class eventType(db.Model):
     __tablename__ = 'eventType'
@@ -145,7 +145,7 @@ class impact(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    ratings = db.relationship('rating', backref='impact', lazy='dynamic')
+    ratings = db.relationship('rating', backref='impact', lazy='dynamic', passive_deletes='all')
 
 class probability(db.Model):
     __tablename__ = 'probability'
@@ -162,7 +162,7 @@ class probability(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    ratings = db.relationship('rating', backref='probability', lazy='dynamic')
+    ratings = db.relationship('rating', backref='probability', lazy='dynamic', passive_deletes='all')
 
 class causingFactorType(db.Model):
     __tablename__ = 'causingFactorType'
@@ -178,7 +178,7 @@ class causingFactorType(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    causingFactors = db.relationship('causingFactor', backref='causingFactorType', lazy='dynamic')
+    causingFactors = db.relationship('causingFactor', backref='causingFactorType', lazy='dynamic', passive_deletes='all')
 
 class processArea(db.Model):
     __tablename__ = 'processArea'
@@ -236,7 +236,7 @@ class valueChainArea(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    valueChains = db.relationship('valueChain', backref='valueChainArea', lazy='dynamic')
+    valueChains = db.relationship('valueChain', backref='valueChainArea', lazy='dynamic', passive_deletes='all')
 
 class valueChainStepType(db.Model):
     __tablename__ = 'valueChainStepType'
