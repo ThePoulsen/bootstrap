@@ -23,16 +23,20 @@
                 </thead>
                 <tbody>
                     <tr>
-                        <td>Title</td>
-                        <td>{{detailsData['title']}}</td>
+                        <td>Value</td>
+                        <td>{{detailsData['value']}}</td>
                     </tr>
                     <tr>
                         <td>Description</td>
                         <td>{{detailsData['desc']}}</td>
                     </tr>
                     <tr>
-                        <td>Causing Factor Type</td>
-                        <td>{{detailsData['causingFactorType'].title}}</td>
+                        <td>Impact</td>
+                        <td>{{detailsData['impact'].value}}</td>
+                    </tr>
+                    <tr>
+                        <td>Probability</td>
+                        <td>{{detailsData['probability'].value}}</td>
                     </tr>
                     <tr>
                         <td>Created By</td>
@@ -74,9 +78,9 @@
             {% else %}
             <form method="post" name="ratingForm" id="ratingForm">
                 <div class="form-group">
-                    {{ form.title.label }}
-                    {{ form.title(class_='form-control ')}}
-                    {% for error in form.title.errors %}
+                    {{ form.value.label }}
+                    {{ form.value(class_='form-control ')}}
+                    {% for error in form.value.errors %}
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>
@@ -90,9 +94,17 @@
                 </div>
 
                 <div class="form-group">
-                    {{ form.causingFactorType.label }}
-                    {{ form.causingFactorType(class_='form-control')}}
-                    {% for error in form.causingFactorType.errors %}
+                    {{ form.impact.label }}
+                    {{ form.impact(class_='form-control')}}
+                    {% for error in form.impact.errors %}
+                        <p>{{error}}</p>
+                    {% endfor %}
+                </div>
+
+                <div class="form-group">
+                    {{ form.probability.label }}
+                    {{ form.probability(class_='form-control')}}
+                    {% for error in form.probability.errors %}
                         <p>{{error}}</p>
                     {% endfor %}
                 </div>

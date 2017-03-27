@@ -939,17 +939,35 @@ def impactView(function=None, uuid=None):
 
     postForm = impactForm()
     postData = {'title':postForm.title.data,
+                'cost':postForm.cost.data,
+                'schedule':postForm.schedule.data,
+                'requirements':postForm.requirements.data,
+                'legal':postForm.legal.data,
+                'other':postForm.other.data,
                 'desc':postForm.desc.data,
                 'value':postForm.value.data}
 
     putForm = impactForm()
     putData = {'title':putForm.title.data,
+               'cost':putForm.cost.data,
+               'schedule':putForm.schedule.data,
+               'requirements':putForm.requirements.data,
+               'legal':putForm.legal.data,
+               'other':putForm.other.data,
                'desc':putForm.desc.data,
                'value':putForm.value.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
-                'putForm = impactForm(title=data.title, desc=data.desc, value=data.value)']
+                'dataKwargs = {"title":data.title}',
+                'dataKwargs["cost"] = data.cost',
+                'dataKwargs["schedule"] = data.schedule',
+                'dataKwargs["requirements"] = data.requirements',
+                'dataKwargs["legal"] = data.legal',
+                'dataKwargs["other"] = data.other',
+                'dataKwargs["desc"] = data.desc',
+                'dataKwargs["value"] = data.value',
+                'putForm = impactForm(**dataKwargs)']
 
     # Post variables
     postExecs = []

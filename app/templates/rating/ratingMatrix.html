@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}User profile{% endblock %}
+
+{% block breadCrumb %}
+    <li><a href="{{url_for('ratingBP.ratingMatrixView')}}">Risk Rating Matrix</a></li>
+{% endblock %}
+
+{% block pageContent %}
+<div class="col col-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Rating Matrix</h1>
+        </div>
+        <div class="panel-body">
+            <table class="ratingTable">
+
+                <tbody>
+                    <th class="impactRowSpan" rowspan="{{impacts|length +1}}"><p class="vertical-text">Impact</p></th>
+                    {% for i in impacts %}
+                    <tr>
+                        <th class="impactHeaders">
+                            {{i.value}}<br>
+                            {{i.impact}}
+                        </th>
+                        <th class="impactDetailsCell"></th>
+                        <th class="impactDetailsCell"></th>
+                        <th class="impactDetailsCell"></th>
+                        <th class="impactDetailsCell"></th>
+                        <th class="impactDetailsCell"></th>
+                        {% for p in probabilities %}
+                        {% for d in data %}
+                        {% if i.value == d.impact and p.value == d.probability %}
+                            <td class="ratingCell rating_1-4_{{d.rating}}">{{d.rating}}<br>{{d.desc}}</td>
+                        {% endif %}
+                        {% endfor %}
+                        {% endfor %}
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th></th>
+                        <th></th>
+                        <th class="impactDetailsHeaders">Cost</th>
+                        <th class="impactDetailsHeaders">Schedule</th>
+                        <th class="impactDetailsHeaders">Requirements</th>
+                        <th class="impactDetailsHeaders">Legal</th>
+                        <th class="impactDetailsHeaders">Other</th>
+                        {% for p in probabilities %}
+                        <th class="probabilityHeaders">
+                            {{p.value}}<br>
+                            {{p.probability}}
+                        </th>
+                        {% endfor %}
+                    </tr>
+                    <tr>
+                    <th></th>
+                    <th></th>
+                    <th class="impactDetailsColSpan" colspan="4">Impact Details</th>
+                    <th class="probabilityColSpan" colspan="{{probabilities|length}}">Probability</th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -2,7 +2,7 @@ Todo
     masterData:
 
     intermediaries:
-        rating
+
         event
         inheritedEvent
         valueChainStep
@@ -26,12 +26,16 @@ program settings - name project data columns - enable/disable extra columns
 
 
 done
+    User management
+        user
+        group
+
     Intermediaries
         valueChain
         treatment
         causingFactor
-        user
-        group
+        rating
+        rating matrix
 
     masterData:
         causingFactorType

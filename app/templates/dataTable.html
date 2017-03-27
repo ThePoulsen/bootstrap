@@ -5,7 +5,7 @@
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     var oTable =  $('#dataTable').DataTable(
@@ -76,27 +76,27 @@ $(document).ready(function() {
                 {% endfor %}
 
                 {% if not withoutDetailsButton %}
-                    <th class="tableButtons"></th>
+                    <th class="tableButtons" id ="details"></th>
                 {% endif %}
 
                 {% if not withoutEditButton %}
-                    <th class="tableButtons"></th>
+                    <th class="tableButtons" id ="edit"></th>
                 {% endif %}
 
                 {% if activateButton %}
-                    <th class="tableButtons"></th>
+                    <th class="tableButtons" id="activate"></th>
                 {% endif %}
 
                 {% if lockButton %}
-                    <th class="tableButtons"></th>
+                    <th class="tableButtons" id="lock"></th>
                 {% endif %}
 
                 {% if not withoutDeleteButton %}
-                    <th class="tableButtons"></th>
+                    <th class="tableButtons" id="delete"></th>
                 {% endif %}
 
                 {% if not withoutNewButton %}
-                    <th class="tableButtons">
+                    <th class="tableButtons" id="new">
                         <a href="{{ request.path }}/new">
                             <i class="fa fa-plus" data-toggle="tooltip" title="Add row"></i>
                         </a>
@@ -120,11 +120,11 @@ $(document).ready(function() {
                     {% endfor %}
 
                     {% if not withoutNewButton %}
-                        <td class="tableButtons"></td>
+                        <td class="tableButtons" id="new"></td>
                     {% endif %}
 
                     {% if not withoutDetailsButton %}
-                        <td class="tableButtons">
+                        <td class="tableButtons" id="details">
                             <form name="rowDetails{{row[0]}}" action="{{ request.path }}/details/{{row[0]}}" class="rowDetails" method="get">
                                 <input type='hidden' class="updateButton" type="submit" value="Update">
                             </form>
@@ -135,7 +135,7 @@ $(document).ready(function() {
                     {% endif %}
 
                     {% if not withoutEditButton %}
-                        <td class="tableButtons">
+                        <td class="tableButtons" id="edit">
                             <form name="editRow{{row[0]}}" action="{{ request.path }}/edit/{{row[0]}}" class="editRow" method="get">
                                 <input type='hidden' class="updateButton" type="submit" value="Edit">
                             </form>
@@ -147,7 +147,7 @@ $(document).ready(function() {
 
                     {% if lockButton %}
                         {% if 'unlock' in row[lockIndex] %}
-                        <td class="tableButtons">
+                        <td class="tableButtons" id="lock">
                             <form name="lockRow{{row[0]}}" action="{{ request.path }}/lock/{{row[0]}}" class="lockRow" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="lock">
                             </form>
@@ -156,7 +156,7 @@ $(document).ready(function() {
                             </a>
                         </td>
                         {% else %}
-                        <td class="tableButtons">
+                        <td class="tableButtons" id="lock">
                             <form name="unlockRow{{row[0]}}" action="{{ request.path }}/unlock/{{row[0]}}" class="unlockRow" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="unlock">
                             </form>
@@ -169,7 +169,7 @@ $(document).ready(function() {
 
                     {% if activateButton %}
                         {% if 'check' in row[activeIndex] %}
-                            <td class="tableButtons">
+                            <td class="tableButtons" id="activate">
                                 <form name="deactivateRow{{row[0]}}" action="{{ request.path }}/deactivate/{{row[0]}}" class="deactivateRow" method="post">
                                     <input type='hidden' class="updateButton" type="submit" value="deactivate">
                                 </form>
@@ -178,7 +178,7 @@ $(document).ready(function() {
                                 </a>
                             </td>
                         {% else %}
-                            <td class="tableButtons">
+                            <td class="tableButtons" id="activate">
                                 <form name="activateRow{{row[0]}}" action="{{ request.path }}/activate/{{row[0]}}" class="activateRow" method="post">
                                     <input type='hidden' class="updateButton" type="submit" value="activate">
                                 </form>
@@ -190,7 +190,7 @@ $(document).ready(function() {
                     {% endif %}
 
                     {% if not withoutDeleteButton %}
-                        <td class="tableButtons">
+                        <td class="tableButtons" id="delete">
                             <form name="deleteRow{{row[0]}}" action="{{ request.path }}/delete/{{row[0]}}" class="deleteRow" method="post">
                                 <input type='hidden' class="updateButton" type="submit" value="Edit">
                             </form>

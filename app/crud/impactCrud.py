@@ -16,12 +16,17 @@ def getImpact(uuid):
 
 def postImpact(data):
     row = impact(title = data['title'],
-                   desc = data['desc'],
-                   value = data['value'],
-                   tenant_uuid = session['tenant_uuid'],
-                   uuid = UUID.uuid4(),
-                   created=datetime.now(),
-                   createdBy=session['user_uuid'])
+                 cost = data['cost'],
+                 schedule = data['schedule'],
+                 requirements = data['requirements'],
+                 legal = data['legal'],
+                 other = data['other'],
+                 desc = data['desc'],
+                 value = data['value'],
+                 tenant_uuid = session['tenant_uuid'],
+                 uuid = UUID.uuid4(),
+                 created=datetime.now(),
+                 createdBy=session['user_uuid'])
 
     try:
         db.session.add(row)
@@ -40,10 +45,16 @@ def putImpact(data, uuid):
     row = getImpact(uuid)
     changes = compareDict(row=row, data=data)['modified']
     row.title = data['title']
+    row.cost = data['cost']
+    row.schedule = data['schedule']
+    row.requirements = data['requirements']
+    row.legal = data['legal']
+    row.other = data['other']
     row.desc = data['desc']
     row.value = data['value']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
+
 
     try:
         db.session.commit()

@@ -59,6 +59,11 @@ class eventTypeForm(FlaskForm):
 class impactForm(FlaskForm):
     value = IntegerField('Value',[InputRequired('Please enter a Impact Value')])
     title = StringField('Impact',[InputRequired('Please enter a Impact')])
+    cost = TextAreaField('Cost')
+    schedule = TextAreaField('Schedule')
+    requirements = TextAreaField('Requirements')
+    legal = TextAreaField('Legal')
+    other = TextAreaField('Other')
     desc = TextAreaField('Description')
     submit = SubmitField(label='Save')
     submitStay = SubmitField(label='Save and add new')

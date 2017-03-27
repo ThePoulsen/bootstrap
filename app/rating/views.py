@@ -13,7 +13,7 @@ ratingBP = Blueprint('ratingBP', __name__)
 @requiredRole(['Administrator','Superuser'])
 def ratingView(function=None, uuid=None):
     # Universal vars
-    viewName = 'rating'
+    viewName = 'Rating'
     viewURL = 'ratingBP.ratingView'
     listColumns = ['Rating', 'Description', 'Probability', 'Impact']
     templateView = 'rating/rating.html'
@@ -47,19 +47,19 @@ def ratingView(function=None, uuid=None):
     putExecs = ['data = getCrud(uuid)',
                 'impact=data.impact.uuid if data.impact else ""',
                 'probability=data.probability.uuid if data.probability else ""',
-                'putForm = impactForm(value=data.value,desc=data.desc,impact=impact,probability=probability)',
-                'impacts = impactCrud.impactTypeSelectData()',
-                'impacts.insert(0,("","Select Causing Factor Type"))',
+                'putForm = ratingForm(value=data.value,desc=data.desc,impact=impact,probability=probability)',
+                'impacts = impactCrud.impactSelectData()',
+                'impacts.insert(0,("","Select Impact"))',
                 'probabilies = probabilityCrud.probabilitySelectData()',
-                'probabilies.insert(0,("","Select Causing Factor Type"))',
+                'probabilies.insert(0,("","Probability"))',
                 'putForm.probability.choices = probabilies',
                 'putForm.impact.choices = impacts']
 
     # Post variables
-    postExecs = ['impacts = impactCrud.impactTypeSelectData()',
-                 'impacts.insert(0,("","Select Causing Factor Type"))',
+    postExecs = ['impacts = impactCrud.impactSelectData()',
+                 'impacts.insert(0,("","Select Impact"))',
                  'probabilies = probabilityCrud.probabilitySelectData()',
-                 'probabilies.insert(0,("","Select Causing Factor Type"))',
+                 'probabilies.insert(0,("","Select Probability"))',
                  'postForm.probability.choices = probabilies',
                  'postForm.impact.choices = impacts']
 
@@ -132,3 +132,20 @@ def ratingView(function=None, uuid=None):
         elif 'error' in req:
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
+
+@ratingBP.route('/ratingMatrix', methods=['GET'])
+def ratingMatrixView():
+    kwargs = {}
+    impacts = [{'value':i.value,'impact':i.title} for i in impactCrud.getImpacts()]
+    probabilities = [{'value':i.value,'probability':i.title} for i in probabilityCrud.getProbabilities()]
+    data = [{'impact':r.impact.value,'probability':r.probability.value,'rating':r.value,'desc':r.desc} for r in crud.getRatings()]
+
+
+    impacts = sorted(impacts, key=lambda k: k['value'], reverse=True)
+    probabilities = sorted(probabilities, key=lambda k: k['value'])
+
+    kwargs['impacts'] = impacts
+    kwargs['probabilities'] = probabilities
+    kwargs['data'] = data
+
+    return render_template('rating/ratingMatrix.html', **kwargs)
