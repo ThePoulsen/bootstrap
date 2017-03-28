@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}User profile{% endblock %}
-
 {% block breadCrumb %}
     <li><a href="{{url_for('ratingBP.ratingMatrixView')}}">Risk Rating Matrix</a></li>
 {% endblock %}
@@ -23,11 +21,11 @@
                             {{i.value}}<br>
                             {{i.impact}}
                         </th>
-                        <th class="impactDetailsCell"></th>
-                        <th class="impactDetailsCell"></th>
-                        <th class="impactDetailsCell"></th>
-                        <th class="impactDetailsCell"></th>
-                        <th class="impactDetailsCell"></th>
+                        <th class="impactDetailsCell">{{i.cost if not i.cost == None}}</th>
+                        <th class="impactDetailsCell">{{i.schedule if not i.schedule == None}}</th>
+                        <th class="impactDetailsCell">{{i.requirements if not i.requirements == None}}</th>
+                        <th class="impactDetailsCell">{{i.legal if not i.legal == None}}</th>
+                        <th class="impactDetailsCell">{{i.other if not i.other == None}}</th>
                         {% for p in probabilities %}
                         {% for d in data %}
                         {% if i.value == d.impact and p.value == d.probability %}
@@ -58,7 +56,7 @@
                     <tr>
                     <th></th>
                     <th></th>
-                    <th class="impactDetailsColSpan" colspan="4">Impact Details</th>
+                    <th class="impactDetailsColSpan" colspan="5">Impact Details</th>
                     <th class="probabilityColSpan" colspan="{{probabilities|length}}">Probability</th>
                     </tr>
                 </tfoot>

@@ -136,7 +136,13 @@ def ratingView(function=None, uuid=None):
 @ratingBP.route('/ratingMatrix', methods=['GET'])
 def ratingMatrixView():
     kwargs = {}
-    impacts = [{'value':i.value,'impact':i.title} for i in impactCrud.getImpacts()]
+    impacts = [{'value':i.value,
+                'impact':i.title,
+                'cost':i.cost,
+                'schedule':i.schedule,
+                'requirements':i.requirements,
+                'legal':i.legal,
+                'other':i.other,} for i in impactCrud.getImpacts()]
     probabilities = [{'value':i.value,'probability':i.title} for i in probabilityCrud.getProbabilities()]
     data = [{'impact':r.impact.value,'probability':r.probability.value,'rating':r.value,'desc':r.desc} for r in crud.getRatings()]
 

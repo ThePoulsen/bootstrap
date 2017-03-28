@@ -921,13 +921,11 @@ def impactView(function=None, uuid=None):
     # Universal vars
     viewName = 'Impact'
     viewURL = 'mdBP.impactView'
-    listColumns = ['Value', 'Impact', 'Description']
+    listColumns = ['Value', 'Impact', 'Cost', 'Schedule', 'Requirements', 'Legal', 'Other']
     templateView = 'masterData/impact.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
-              'maxDataTableWidth': '700',
-              'minDataTableWidth': '500',
               'details': False}
 
     # Cruds
@@ -944,7 +942,6 @@ def impactView(function=None, uuid=None):
                 'requirements':postForm.requirements.data,
                 'legal':postForm.legal.data,
                 'other':postForm.other.data,
-                'desc':postForm.desc.data,
                 'value':postForm.value.data}
 
     putForm = impactForm()
@@ -954,7 +951,6 @@ def impactView(function=None, uuid=None):
                'requirements':putForm.requirements.data,
                'legal':putForm.legal.data,
                'other':putForm.other.data,
-               'desc':putForm.desc.data,
                'value':putForm.value.data}
 
     # put variables
@@ -965,7 +961,6 @@ def impactView(function=None, uuid=None):
                 'dataKwargs["requirements"] = data.requirements',
                 'dataKwargs["legal"] = data.legal',
                 'dataKwargs["other"] = data.other',
-                'dataKwargs["desc"] = data.desc',
                 'dataKwargs["value"] = data.value',
                 'putForm = impactForm(**dataKwargs)']
 

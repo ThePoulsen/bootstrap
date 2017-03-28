@@ -21,7 +21,6 @@ def postImpact(data):
                  requirements = data['requirements'],
                  legal = data['legal'],
                  other = data['other'],
-                 desc = data['desc'],
                  value = data['value'],
                  tenant_uuid = session['tenant_uuid'],
                  uuid = UUID.uuid4(),
@@ -50,7 +49,6 @@ def putImpact(data, uuid):
     row.requirements = data['requirements']
     row.legal = data['legal']
     row.other = data['other']
-    row.desc = data['desc']
     row.value = data['value']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
@@ -90,6 +88,6 @@ def impactListData():
     entries = getImpacts()
     data = []
     for r in entries:
-        temp = [r.uuid, r.value, r.title, r.desc]
+        temp = [r.uuid, r.value, r.title, r.cost, r.schedule, r.requirements, r.legal, r.other]
         data.append(temp)
     return data

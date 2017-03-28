@@ -1,7 +1,5 @@
 {% extends "base.html" %}
 
-{% block title %}This is an example page{% endblock %}
-
 {% block styles %}
 {{super()}}
 <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.13/css/dataTables.bootstrap.min.css">
@@ -111,11 +109,11 @@ $(document).ready(function() {
                         {% if column is iterable and column is not string %}
                             <td>
                                 {% for r in column %}
-                                    {{r}} <br>
+                                    {{r if r else ''}} <br>
                                 {% endfor %}
                             </td>
                         {% else %}
-                            <td>{{ column|safe }}</td>
+                            <td>{{ column|safe if column else '' }}</td>
                         {% endif %}
                     {% endfor %}
 

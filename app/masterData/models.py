@@ -143,7 +143,6 @@ class impact(db.Model):
     requirements = db.Column(db.String())
     legal = db.Column(db.String())
     other = db.Column(db.String())
-    desc = db.Column(db.String())
     tenant_uuid = db.Column(db.String(), nullable=False)
     createdBy = db.Column(db.String(), nullable=False)
     created = db.Column(db.DateTime(), nullable=False)
