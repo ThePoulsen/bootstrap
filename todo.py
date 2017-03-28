@@ -2,7 +2,6 @@ Todo
     masterData:
 
     intermediaries:
-
         event
         inheritedEvent
         valueChainStep
@@ -10,7 +9,7 @@ Todo
         process
         organization
         pareto
-        Risk
+
 
     end:
         eventRegistration
@@ -36,6 +35,7 @@ done
         causingFactor
         rating
         rating matrix
+        Risk
 
     masterData:
         causingFactorType

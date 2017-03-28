@@ -3,67 +3,91 @@
 from flask import render_template, Blueprint, request, session, redirect, url_for
 from app.services.services import errorMessage, successMessage, loginRequired, requiredRole, getUser
 import crud
-from app.crud import impactCrud, probabilityCrud
-from forms import ratingForm
+from app.crud import riskAreaCrud, riskTypeCrud, impactCrud, probabilityCrud, userCrud
+from forms import riskForm
 
-ratingBP = Blueprint('ratingBP', __name__)
+riskBP = Blueprint('riskBP', __name__)
 
-@ratingBP.route('/rating', methods=['GET','POST'])
-@ratingBP.route('/rating/<string:function>', methods=['GET','POST'])
-@ratingBP.route('/rating/<string:function>/<string:uuid>', methods=['GET','POST'])
+@riskBP.route('/risk', methods=['GET','POST'])
+@riskBP.route('/risk/<string:function>', methods=['GET','POST'])
+@riskBP.route('/risk/<string:function>/<string:uuid>', methods=['GET','POST'])
 @loginRequired
 @requiredRole(['Administrator','Superuser'])
-def ratingView(function=None, uuid=None):
+def riskView(function=None, uuid=None):
     # Universal vars
-    viewName = 'Rating'
-    viewURL = 'ratingBP.ratingView'
-    listColumns = ['Rating', 'Description', 'Probability', 'Impact']
-    templateView = 'rating/rating.html'
+    viewName = 'Risk'
+    viewURL = 'riskBP.riskView'
+    listColumns = ['Risk', 'Description', 'Impact', 'Probability', 'Risk Rating', 'Created', 'Author', 'Owner']
+    templateView = 'risk/risk.html'
 
     # View kwargs
     kwargs = {'title': viewName+' list',
-              'maxDataTableWidth': '700',
-              'minDataTableWidth': '500',
               'details': False}
 
     # Cruds
-    listCrud = crud.ratingListData
-    getCrud = crud.getRating
-    postCrud = crud.postRating
-    putCrud = crud.putRating
-    deleteCrud = crud.deleteRating
+    listCrud = crud.riskListData
+    getCrud = crud.getRisk
+    postCrud = crud.postRisk
+    putCrud = crud.putRisk
+    deleteCrud = crud.deleteRisk
 
-    postForm = ratingForm()
-    postData = {'value':postForm.value.data,
+    postForm = riskForm()
+    postData = {'title':postForm.title.data,
                 'desc':postForm.desc.data,
                 'probability':postForm.probability.data,
-                'impact':postForm.impact.data}
+                'impact':postForm.impact.data,
+                'riskArea':postForm.riskArea.data,
+                'riskType':postForm.riskType.data,
+                'owner':postForm.owner.data}
 
-    putForm = ratingForm()
-    putData = {'value':putForm.value.data,
+    putForm = riskForm()
+    putData = {'title':putForm.title.data,
                'desc':putForm.desc.data,
                'probability':putForm.probability.data,
-               'impact':putForm.impact.data}
+               'impact':putForm.impact.data,
+               'riskArea':putForm.riskArea.data,
+               'riskType':putForm.riskType.data,
+               'owner':putForm.owner.data}
 
     # put variables
     putExecs = ['data = getCrud(uuid)',
                 'impact=data.impact.uuid if data.impact else ""',
                 'probability=data.probability.uuid if data.probability else ""',
-                'putForm = ratingForm(value=data.value,desc=data.desc,impact=impact,probability=probability)',
+                'riskArea=data.riskArea.uuid if data.riskArea else ""',
+                'riskType=data.riskType.uuid if data.riskType else ""',
+                'putForm = riskForm(title=data.title,desc=data.desc,impact=impact,probability=probability, riskArea=riskArea, riskType=riskType, owner=data.owner)',
                 'impacts = impactCrud.impactSelectData()',
                 'impacts.insert(0,("","Select Impact"))',
                 'probabilies = probabilityCrud.probabilitySelectData()',
                 'probabilies.insert(0,("","Probability"))',
+                'riskAreas = riskAreaCrud.riskAreaSelectData()',
+                'riskAreas.insert(0,("","Select Risk Area"))',
+                'riskTypes = riskTypeCrud.riskTypeSelectData()',
+                'riskTypes.insert(0,("","Select Risk Type"))',
+                'owners = userCrud.userSelectData()',
+                'owners.insert(0,("","Select User"))',
                 'putForm.probability.choices = probabilies',
-                'putForm.impact.choices = impacts']
+                'putForm.impact.choices = impacts',
+                'putForm.riskArea.choices = riskAreas',
+                'putForm.riskType.choices = riskTypes',
+                'putForm.owner.choices = owners']
 
     # Post variables
     postExecs = ['impacts = impactCrud.impactSelectData()',
                  'impacts.insert(0,("","Select Impact"))',
                  'probabilies = probabilityCrud.probabilitySelectData()',
                  'probabilies.insert(0,("","Select Probability"))',
+                 'riskAreas = riskAreaCrud.riskAreaSelectData()',
+                 'riskAreas.insert(0,("","Select Risk Area"))',
+                 'riskTypes = riskTypeCrud.riskTypeSelectData()',
+                 'riskTypes.insert(0,("","Select Risk Type"))',
+                 'owners = userCrud.userSelectData()',
+                 'owners.insert(0,("","Select User"))',
                  'postForm.probability.choices = probabilies',
-                 'postForm.impact.choices = impacts']
+                 'postForm.impact.choices = impacts',
+                 'postForm.riskArea.choices = riskAreas',
+                 'postForm.riskType.choices = riskTypes',
+                 'postForm.owner.choices = owners']
 
     # --------------------------------------------------------------------------------------------
     # CRUD Views (Do not touch!)
@@ -134,26 +158,3 @@ def ratingView(function=None, uuid=None):
         elif 'error' in req:
             errorMessage(req['error'])
         return redirect(url_for(viewURL))
-
-@ratingBP.route('/ratingMatrix', methods=['GET'])
-def ratingMatrixView():
-    kwargs = {}
-    impacts = [{'value':i.value,
-                'impact':i.title,
-                'cost':i.cost,
-                'schedule':i.schedule,
-                'requirements':i.requirements,
-                'legal':i.legal,
-                'other':i.other,} for i in impactCrud.getImpacts()]
-    probabilities = [{'value':i.value,'probability':i.title} for i in probabilityCrud.getProbabilities()]
-    data = [{'impact':r.impact.value,'probability':r.probability.value,'rating':r.value,'desc':r.desc} for r in crud.getRatings()]
-
-
-    impacts = sorted(impacts, key=lambda k: k['value'], reverse=True)
-    probabilities = sorted(probabilities, key=lambda k: k['value'])
-
-    kwargs['impacts'] = impacts
-    kwargs['probabilities'] = probabilities
-    kwargs['data'] = data
-
-    return render_template('rating/ratingMatrix.html', **kwargs)

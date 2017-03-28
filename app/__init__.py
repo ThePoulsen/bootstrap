@@ -34,6 +34,7 @@ from app.causingFactor.models import *
 from app.treatment.models import *
 from app.audit.models import *
 from app.rating.models import *
+from app.risk.models import *
 
 ## import blueprints
 from .indexView import indexBP
@@ -44,6 +45,7 @@ from app.valueChain.views import valueChainBP
 from app.causingFactor.views import causingFactorBP
 from app.treatment.views import treatmentBP
 from app.rating.views import ratingBP
+from app.risk.views import riskBP
 
 ## Register blueprints
 app.register_blueprint(indexBP, url_prefix='')
@@ -54,3 +56,4 @@ app.register_blueprint(valueChainBP, url_prefix='')
 app.register_blueprint(causingFactorBP, url_prefix='')
 app.register_blueprint(treatmentBP, url_prefix='')
 app.register_blueprint(ratingBP, url_prefix='')
+app.register_blueprint(riskBP, url_prefix='')

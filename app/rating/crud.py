@@ -43,7 +43,7 @@ def postRating(data):
             return {'error': unicode(E)}
 
 def putRating(data, uuid):
-    row = getCausingFactor(uuid)
+    row = getRating(uuid)
     i = impactCrud.getImpact(data['impact'])
     p = probabilityCrud.getProbability(data['probability'])
 
@@ -57,8 +57,10 @@ def putRating(data, uuid):
     row.desc = data['desc']
     row.modified = datetime.now()
     row.modifiedBy = session['user_uuid']
-    row.causingFactorType_uuid = c.uuid
-    row.causingFactorType = c
+    row.impact_uuid = i.uuid
+    row.impact = i
+    row.probability_uuid = p.uuid
+    row.probability = p
 
     try:
         db.session.commit()

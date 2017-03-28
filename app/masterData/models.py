@@ -150,6 +150,7 @@ class impact(db.Model):
     modified = db.Column(db.DateTime())
 
     ratings = db.relationship('rating', backref='impact', lazy='dynamic', passive_deletes='all')
+    risks = db.relationship('risk', backref='impact', lazy='dynamic', passive_deletes='all')
 
 class probability(db.Model):
     __tablename__ = 'probability'
@@ -167,6 +168,7 @@ class probability(db.Model):
     modified = db.Column(db.DateTime())
 
     ratings = db.relationship('rating', backref='probability', lazy='dynamic', passive_deletes='all')
+    risks = db.relationship('risk', backref='probability', lazy='dynamic', passive_deletes='all')
 
 class causingFactorType(db.Model):
     __tablename__ = 'causingFactorType'
@@ -212,6 +214,8 @@ class riskArea(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
+    risks = db.relationship('risk', backref='riskArea', lazy='dynamic', passive_deletes='all')
+
 class riskType(db.Model):
     __tablename__ = 'riskType'
     __table_args__ = (db.UniqueConstraint('title', 'tenant_uuid'),)
@@ -225,6 +229,8 @@ class riskType(db.Model):
     created = db.Column(db.DateTime(), nullable=False)
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
+
+    risks = db.relationship('risk', backref='riskType', lazy='dynamic', passive_deletes='all')
 
 class valueChainArea(db.Model):
     __tablename__ = 'valueChainArea'

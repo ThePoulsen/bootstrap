@@ -28,8 +28,8 @@ class user(db.Model):
     modifiedBy = db.Column(db.String())
     modified = db.Column(db.DateTime())
 
-    groups = db.relationship('group', secondary=user_groups,
-                            backref=db.backref('userGroups', lazy='dynamic'))
+    groups = db.relationship('group', secondary=user_groups, backref=db.backref('userGroups', lazy='dynamic'))
+    risks = db.relationship('risk', backref='riskOwner', lazy='dynamic', passive_deletes='all')
 
 class group(db.Model):
     __tablename__ = 'group'
